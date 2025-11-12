@@ -63,12 +63,22 @@ app.get('/api/v1', (req, res) => {
     version: '1.0.0',
     endpoints: {
       health: 'GET /health',
+      public: {
+        description: '🌐 Public endpoints (NO AUTH required)',
+        cities: 'GET /api/v1/public/cities',
+        clinics: 'GET /api/v1/public/clinics',
+        clinicDetails: 'GET /api/v1/public/clinics/:slug',
+        clinicDoctors: 'GET /api/v1/public/clinics/:slug/doctors',
+        createAppointment: 'POST /api/v1/public/appointments',
+      },
       auth: {
+        description: '🔐 Authentication',
         register: 'POST /api/v1/auth/register',
         login: 'POST /api/v1/auth/login',
         me: 'GET /api/v1/auth/me',
       },
       patients: {
+        description: '👥 Patient management (AUTH required)',
         list: 'GET /api/v1/patients',
         get: 'GET /api/v1/patients/:id',
         create: 'POST /api/v1/patients',
@@ -77,6 +87,7 @@ app.get('/api/v1', (req, res) => {
         search: 'GET /api/v1/patients/search/phone?phone=xxx',
       },
       users: {
+        description: '👨‍⚕️ Staff management (AUTH required)',
         list: 'GET /api/v1/users',
         doctors: 'GET /api/v1/users/doctors',
         get: 'GET /api/v1/users/:id',
@@ -85,6 +96,7 @@ app.get('/api/v1', (req, res) => {
         delete: 'DELETE /api/v1/users/:id',
       },
       appointments: {
+        description: '📅 Appointment management (AUTH required)',
         list: 'GET /api/v1/appointments',
         get: 'GET /api/v1/appointments/:id',
         create: 'POST /api/v1/appointments',

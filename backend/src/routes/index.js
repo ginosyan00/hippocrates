@@ -3,6 +3,7 @@ import authRoutes from './auth.routes.js';
 import patientRoutes from './patient.routes.js';
 import userRoutes from './user.routes.js';
 import appointmentRoutes from './appointment.routes.js';
+import publicRoutes from './public.routes.js';
 
 const router = express.Router();
 
@@ -11,16 +12,19 @@ const router = express.Router();
  * Объединение всех маршрутов
  */
 
+// Public routes (БЕЗ авторизации!)
+router.use('/public', publicRoutes);
+
 // Auth routes
 router.use('/auth', authRoutes);
 
-// Patient routes
+// Patient routes (требуют авторизацию)
 router.use('/patients', patientRoutes);
 
-// User routes
+// User routes (требуют авторизацию)
 router.use('/users', userRoutes);
 
-// Appointment routes
+// Appointment routes (требуют авторизацию)
 router.use('/appointments', appointmentRoutes);
 
 // Health check (для удобства, дублирует основной health endpoint)

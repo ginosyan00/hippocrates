@@ -1,44 +1,54 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { LoginPage } from './pages/auth/Login';
+import { RegisterPage } from './pages/auth/Register';
+import { DashboardPage } from './pages/dashboard/Dashboard';
+import { PatientsPage } from './pages/dashboard/Patients';
+import { AppointmentsPage } from './pages/dashboard/Appointments';
+import { StaffPage } from './pages/dashboard/Staff';
+import { HomePage } from './pages/public/Home';
+import { ClinicsPage } from './pages/public/Clinics';
+import { ClinicPage } from './pages/public/ClinicPage';
+import { DashboardLayout } from './components/dashboard/DashboardLayout';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 /**
  * Main Application Component
+ * Router + Routes setup
  */
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            🦷 Hippocrates Dental
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            SaaS-платформа для стоматологических клиник
-          </p>
-          
-          <div className="bg-white rounded-lg shadow-md p-8 max-w-2xl mx-auto">
-            <div className="space-y-4">
-              <div className="flex items-center justify-center space-x-2">
-                <span className="text-green-500 text-2xl">✅</span>
-                <span className="text-lg">Frontend настроен</span>
-              </div>
-              <div className="flex items-center justify-center space-x-2">
-                <span className="text-green-500 text-2xl">✅</span>
-                <span className="text-lg">React + TypeScript + Vite</span>
-              </div>
-              <div className="flex items-center justify-center space-x-2">
-                <span className="text-green-500 text-2xl">✅</span>
-                <span className="text-lg">Tailwind CSS работает</span>
-              </div>
-            </div>
-            
-            <div className="mt-8 text-gray-500">
-              <p className="font-mono text-sm">npm run dev</p>
-              <p className="text-xs mt-2">http://localhost:5173</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Public Website */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/clinics" element={<ClinicsPage />} />
+        <Route path="/clinic/:slug" element={<ClinicPage />} />
+
+        {/* Auth Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Protected Routes - Dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DashboardPage />} />
+          <Route path="patients" element={<PatientsPage />} />
+          <Route path="appointments" element={<AppointmentsPage />} />
+          <Route path="staff" element={<StaffPage />} />
+          <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Настройки (в разработке)</h1></div>} />
+        </Route>
+
+        {/* 404 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
