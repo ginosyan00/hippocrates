@@ -13,10 +13,10 @@ export const Sidebar: React.FC = () => {
   const isSidebarOpen = useUIStore(state => state.isSidebarOpen);
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+    `group flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
       isActive
-        ? 'bg-primary-600 text-white'
-        : 'text-gray-700 hover:bg-gray-100'
+        ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium shadow-lg shadow-primary-500/30'
+        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
     }`;
 
   if (!isSidebarOpen) {
@@ -24,11 +24,18 @@ export const Sidebar: React.FC = () => {
   }
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-primary-600">🦷 Hippocrates</h2>
-        <p className="text-sm text-gray-600 mt-1">{user?.clinic?.name}</p>
+    <aside className="w-64 bg-gradient-to-b from-gray-900 to-gray-950 border-r border-gray-800 min-h-screen flex flex-col shadow-2xl">
+      {/* Modern Header */}
+      <div className="p-6 border-b border-gray-800">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
+            <span className="text-2xl">🦷</span>
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-white">Hippocrates</h2>
+            <p className="text-xs text-gray-400">{user?.clinic?.name}</p>
+          </div>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -74,24 +81,24 @@ export const Sidebar: React.FC = () => {
         )}
       </nav>
 
-      {/* User Info + Logout */}
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="bg-primary-100 rounded-full p-2">
-            <svg className="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      {/* Modern User Info + Logout */}
+      <div className="p-4 border-t border-gray-800">
+        <div className="flex items-center gap-3 mb-3 p-3 bg-gray-800/50 rounded-xl">
+          <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg p-2 shadow-lg">
+            <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
-            <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+            <p className="text-sm font-medium text-white truncate">{user?.name}</p>
+            <p className="text-xs text-gray-400 capitalize">{user?.role}</p>
           </div>
         </div>
         <button
           onClick={logout}
-          className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="group w-full px-4 py-3 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-xl transition-all border border-red-500/20 hover:border-red-500/40 flex items-center justify-center gap-2 font-medium"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="h-4 w-4 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           Выйти
