@@ -10,8 +10,8 @@ interface ModalProps {
 }
 
 /**
- * Modal Component
- * Модальное окно с backdrop
+ * Modal Component - Figma Design
+ * Модальное окно с минималистичным дизайном
  */
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -49,26 +49,26 @@ export const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        className="fixed inset-0 bg-text-100 bg-opacity-50 transition-opacity"
         onClick={onClose}
       ></div>
 
       {/* Modal */}
       <div className="flex min-h-screen items-center justify-center p-4">
         <div
-          className={`relative bg-white rounded-lg shadow-xl ${sizeStyles[size]} w-full max-h-[90vh] overflow-y-auto`}
+          className={`relative bg-bg-white border border-stroke rounded-lg ${sizeStyles[size]} w-full max-h-[90vh] overflow-y-auto`}
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
           {title && (
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-stroke">
+              <h3 className="text-lg font-medium text-text-50">{title}</h3>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-text-10 hover:text-text-100 transition-smooth"
               >
                 <svg
-                  className="h-6 w-6"
+                  className="h-5 w-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -85,11 +85,11 @@ export const Modal: React.FC<ModalProps> = ({
           )}
 
           {/* Body */}
-          <div className="px-6 py-4">{children}</div>
+          <div className="px-5 py-4">{children}</div>
 
           {/* Footer */}
           {footer && (
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-2">
+            <div className="px-5 py-4 bg-bg-primary border-t border-stroke flex justify-end gap-2">
               {footer}
             </div>
           )}

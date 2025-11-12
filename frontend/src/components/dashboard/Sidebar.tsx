@@ -3,20 +3,27 @@ import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 
+// Import icons
+import dashboardIcon from '../../assets/icons/dashboard.svg';
+import calendarIcon from '../../assets/icons/calendar.svg';
+import doctorIcon from '../../assets/icons/doctor.svg';
+import patientIcon from '../../assets/icons/patient.svg';
+import analyticsIcon from '../../assets/icons/analytics.svg';
+import brainLogo from '../../assets/icons/brain-logo.svg';
+
 /**
- * Sidebar Component
- * Боковое меню навигации
+ * Sidebar Component - Figma Design
+ * Боковое меню навигации в стиле медицинского дашборда
  */
 export const Sidebar: React.FC = () => {
   const user = useAuthStore(state => state.user);
-  const logout = useAuthStore(state => state.logout);
   const isSidebarOpen = useUIStore(state => state.isSidebarOpen);
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `group flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+    `group flex items-center gap-5 pr-11 pb-2 transition-smooth ${
       isActive
-        ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium shadow-lg shadow-primary-500/30'
-        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+        ? 'text-main-100 font-semibold'
+        : 'text-text-10 font-normal hover:text-text-50'
     }`;
 
   if (!isSidebarOpen) {
@@ -24,88 +31,61 @@ export const Sidebar: React.FC = () => {
   }
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-gray-900 to-gray-950 border-r border-gray-800 min-h-screen flex flex-col shadow-2xl">
-      {/* Modern Header */}
-      <div className="p-6 border-b border-gray-800">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-            <span className="text-2xl">🦷</span>
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-white">Hippocrates</h2>
-            <p className="text-xs text-gray-400">{user?.clinic?.name}</p>
-          </div>
+    <aside className="w-64 bg-bg-primary border-r border-stroke min-h-screen flex flex-col">
+      {/* Logo Section */}
+      <div className="px-10 pt-6 pb-16">
+        <div className="flex items-center gap-1">
+          <img src={brainLogo} alt="Logo" className="w-10 h-10 -ml-1" />
+          <h2 className="text-[21px] font-semibold text-main-100">Medic</h2>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
-        <NavLink to="/dashboard" className={navLinkClass}>
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-          Главная
-        </NavLink>
-
-        <NavLink to="/dashboard/patients" className={navLinkClass}>
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          Пациенты
-        </NavLink>
-
-        <NavLink to="/dashboard/appointments" className={navLinkClass}>
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          Приёмы
-        </NavLink>
-
-        {user?.role === 'admin' && (
-          <NavLink to="/dashboard/staff" className={navLinkClass}>
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            Сотрудники
+      {/* Navigation Menu */}
+      <nav className="flex-1 px-10 space-y-8">
+        <div className="space-y-8">
+          <NavLink to="/dashboard" className={navLinkClass}>
+            <img src={dashboardIcon} alt="Dashboard" className="w-6 h-6" />
+            <span className="text-sm">Dashboard</span>
           </NavLink>
-        )}
 
-        {user?.role === 'admin' && (
-          <NavLink to="/dashboard/settings" className={navLinkClass}>
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Настройки
+          <NavLink to="/dashboard/appointments" className={navLinkClass}>
+            <img src={calendarIcon} alt="Appointments" className="w-6 h-6" />
+            <span className="text-sm">Appointment</span>
           </NavLink>
-        )}
+
+          {user?.role === 'admin' && (
+            <NavLink to="/dashboard/staff" className={navLinkClass}>
+              <img src={doctorIcon} alt="Staff" className="w-6 h-6" />
+              <span className="text-sm">Doctor</span>
+            </NavLink>
+          )}
+
+          <NavLink to="/dashboard/patients" className={navLinkClass}>
+            <img src={patientIcon} alt="Patients" className="w-6 h-6" />
+            <span className="text-sm">Patient</span>
+          </NavLink>
+
+          <NavLink to="/dashboard/analytics" className={navLinkClass}>
+            <img src={analyticsIcon} alt="Analytics" className="w-6 h-6" />
+            <span className="text-sm">Analytic</span>
+          </NavLink>
+        </div>
       </nav>
 
-      {/* Modern User Info + Logout */}
-      <div className="p-4 border-t border-gray-800">
-        <div className="flex items-center gap-3 mb-3 p-3 bg-gray-800/50 rounded-xl">
-          <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg p-2 shadow-lg">
-            <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
+      {/* Bottom User Section */}
+      <div className="px-10 py-6 border-t border-stroke">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-8 h-8 bg-main-10 rounded-md flex items-center justify-center">
+            <span className="text-sm text-main-100 font-medium">
+              {user?.name?.charAt(0).toUpperCase()}
+            </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">{user?.name}</p>
-            <p className="text-xs text-gray-400 capitalize">{user?.role}</p>
+            <p className="text-xs font-medium text-text-100 truncate">{user?.name}</p>
+            <p className="text-[10px] text-text-10 capitalize">{user?.role}</p>
           </div>
         </div>
-        <button
-          onClick={logout}
-          className="group w-full px-4 py-3 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-xl transition-all border border-red-500/20 hover:border-red-500/40 flex items-center justify-center gap-2 font-medium"
-        >
-          <svg className="h-4 w-4 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          Выйти
-        </button>
       </div>
     </aside>
   );
 };
-
-

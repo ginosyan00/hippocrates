@@ -2,97 +2,146 @@ import React from 'react';
 import { Card } from '../../components/common';
 import { useAuthStore } from '../../store/useAuthStore';
 
+// Import icons
+import messageIcon from '../../assets/icons/message.svg';
+import walletIcon from '../../assets/icons/wallet.svg';
+import patientIcon from '../../assets/icons/patient.svg';
+
 /**
- * Dashboard Page
- * Главная страница админ-панели
+ * Dashboard Page - Figma Design
+ * Главная страница с медицинским дизайном
  */
 export const DashboardPage: React.FC = () => {
   const user = useAuthStore(state => state.user);
 
+  // Mock data for demonstration
+  const upcomingAppointments = [
+    {
+      id: 1,
+      patientName: 'Darrell Steward',
+      date: '15 July 2020, 9:00 AM',
+      service: 'Chiropractic Care',
+    },
+    {
+      id: 2,
+      patientName: 'Brooklyn Simmons',
+      date: '15 July 2020, 9:00 AM',
+      service: 'Nephrology (Kidneys)',
+    },
+    {
+      id: 3,
+      patientName: 'Cameron Williamson',
+      date: '15 July 2020, 9:00 AM',
+      service: 'Diabetes Education',
+    },
+  ];
+
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Панель управления</h1>
-        <p className="text-gray-600 mt-1">
-          Добро пожаловать, {user?.name}!
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {/* Stats Cards */}
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Пациенты</p>
-              <p className="text-2xl font-bold text-gray-900">2</p>
+    <div className="space-y-6">
+      {/* Stats Cards Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Total Payments */}
+        <Card padding="none" className="p-5">
+          <div className="space-y-4">
+            <div className="w-10 h-10 bg-main-10 rounded-sm flex items-center justify-center">
+              <img src={walletIcon} alt="Wallet" className="w-6 h-6" />
             </div>
-            <div className="bg-primary-100 p-3 rounded-full">
-              <svg className="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
+            <div>
+              <p className="text-sm font-normal text-text-10 mb-1">Total Payments</p>
+              <p className="text-2xl font-medium text-text-100">$45,214.00</p>
             </div>
           </div>
         </Card>
 
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Врачи</p>
-              <p className="text-2xl font-bold text-gray-900">2</p>
+        {/* New Patients */}
+        <Card padding="none" className="p-5">
+          <div className="space-y-4">
+            <div className="w-10 h-10 bg-secondary-10 rounded-sm flex items-center justify-center">
+              <img src={patientIcon} alt="Patients" className="w-6 h-6" />
             </div>
-            <div className="bg-green-100 p-3 rounded-full">
-              <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
+            <div>
+              <p className="text-sm font-normal text-text-10 mb-1">New Patients</p>
+              <p className="text-2xl font-medium text-text-100">5,325</p>
             </div>
           </div>
         </Card>
 
-        <Card>
-          <div className="flex items-center justify-between">
+        {/* Important Tasks */}
+        <Card padding="none" className="p-5">
+          <div className="space-y-4">
+            <div className="w-10 h-10 bg-secondary-10 rounded-sm flex items-center justify-center">
+              <img src={messageIcon} alt="Tasks" className="w-6 h-6" />
+            </div>
             <div>
-              <p className="text-sm text-gray-600">Приёмы сегодня</p>
-              <p className="text-2xl font-bold text-gray-900">0</p>
-            </div>
-            <div className="bg-yellow-100 p-3 rounded-full">
-              <svg className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Ожидают подтв.</p>
-              <p className="text-2xl font-bold text-gray-900">2</p>
-            </div>
-            <div className="bg-orange-100 p-3 rounded-full">
-              <svg className="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <p className="text-sm font-normal text-text-10 mb-1">Important Tasks</p>
+              <p className="text-2xl font-medium text-text-100">1,253</p>
             </div>
           </div>
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      <Card title="Быстрые действия">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Button variant="primary" className="w-full">
-            ➕ Добавить пациента
-          </Button>
-          <Button variant="primary" className="w-full">
-            📅 Создать приём
-          </Button>
-          <Button variant="secondary" className="w-full">
-            👨‍⚕️ Добавить врача
-          </Button>
+      {/* Appointment Chart */}
+      <Card padding="none" className="p-5">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-medium text-text-50">Appointment</h3>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-normal text-text-50">Sort by</span>
+            <select className="text-xs border border-stroke rounded-sm px-3 py-2 bg-bg-white text-text-50 focus:outline-none focus:border-main-100">
+              <option>Monthly</option>
+              <option>Weekly</option>
+              <option>Daily</option>
+            </select>
+          </div>
+        </div>
+        
+        {/* Chart Placeholder */}
+        <div className="h-64 bg-gradient-to-b from-main-10/50 to-transparent border border-stroke rounded-sm flex items-center justify-center">
+          <p className="text-text-10 text-sm">Chart visualization would go here</p>
+        </div>
+        
+        {/* Months Legend */}
+        <div className="flex justify-between mt-4 px-4">
+          {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map(month => (
+            <span key={month} className="text-xs text-text-10">{month}</span>
+          ))}
+        </div>
+      </Card>
+
+      {/* Upcoming Appointments Table */}
+      <Card padding="none" className="p-5">
+        <h3 className="text-lg font-medium text-text-50 mb-6">Upcoming Appointment</h3>
+        
+        {/* Table Header */}
+        <div className="grid grid-cols-12 gap-4 pb-4 border-b border-stroke mb-4">
+          <div className="col-span-4 text-sm font-normal text-text-10">Patient name</div>
+          <div className="col-span-3 text-sm font-normal text-text-10">Date</div>
+          <div className="col-span-3 text-sm font-normal text-text-10">Service</div>
+          <div className="col-span-2 text-sm font-normal text-text-10">Action</div>
+        </div>
+
+        {/* Table Rows */}
+        <div className="space-y-4">
+          {upcomingAppointments.map(appointment => (
+            <div key={appointment.id} className="grid grid-cols-12 gap-4 items-center">
+              <div className="col-span-4 flex items-center gap-3">
+                <div className="w-8 h-8 bg-main-10 rounded-sm flex items-center justify-center">
+                  <span className="text-xs text-main-100 font-medium">
+                    {appointment.patientName.charAt(0)}
+                  </span>
+                </div>
+                <span className="text-xs font-medium text-text-100">{appointment.patientName}</span>
+              </div>
+              <div className="col-span-3 text-xs font-medium text-text-50">{appointment.date}</div>
+              <div className="col-span-3 text-xs font-normal text-text-10">{appointment.service}</div>
+              <div className="col-span-2">
+                <button className="bg-main-10 text-main-100 px-6 py-1.5 rounded-sm text-xs font-normal hover:bg-main-100 hover:text-white transition-smooth">
+                  Join
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </Card>
     </div>
   );
 };
-
-

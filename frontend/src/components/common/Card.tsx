@@ -5,22 +5,40 @@ interface CardProps {
   className?: string;
   title?: string;
   footer?: React.ReactNode;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
 /**
- * Card Component
- * Карточка с опциональным заголовком и футером
+ * Card Component - Figma Design
+ * Белые карточки с тонкими границами и закругленными углами
  */
-export const Card: React.FC<CardProps> = ({ children, className = '', title, footer }) => {
+export const Card: React.FC<CardProps> = ({ 
+  children, 
+  className = '', 
+  title, 
+  footer,
+  padding = 'md' 
+}) => {
+  const paddingStyles = {
+    none: '',
+    sm: 'p-4',
+    md: 'p-5',
+    lg: 'p-6'
+  };
+
   return (
-    <div className={`bg-white rounded-lg shadow-md overflow-hidden ${className}`}>
+    <div className={`bg-bg-white border border-stroke rounded-lg overflow-hidden ${className}`}>
       {title && (
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        <div className="px-5 py-4 border-b border-stroke">
+          <h3 className="text-lg font-medium text-text-50">{title}</h3>
         </div>
       )}
-      <div className="px-6 py-4">{children}</div>
-      {footer && <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">{footer}</div>}
+      <div className={paddingStyles[padding]}>{children}</div>
+      {footer && (
+        <div className="px-5 py-4 bg-bg-primary border-t border-stroke">
+          {footer}
+        </div>
+      )}
     </div>
   );
 };

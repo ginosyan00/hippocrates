@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { Button, Card, Modal, Input, Spinner } from '../../components/common';
 import { useUsers, useCreateUser, useDeleteUser } from '../../hooks/useUsers';
 
+// Import doctor icon
+import doctorIcon from '../../assets/icons/doctor.svg';
+
 /**
- * Staff Page
- * Управление сотрудниками
+ * Staff Page - Figma Design
+ * Управление сотрудниками в новом стиле
  */
 export const StaffPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,11 +65,9 @@ export const StaffPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-6">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          Ошибка загрузки: {(error as any).message}
-        </div>
-      </div>
+      <Card className="bg-red-50 border-red-200">
+        <p className="text-red-600 text-sm">Ошибка загрузки: {(error as any).message}</p>
+      </Card>
     );
   }
 
@@ -74,9 +75,9 @@ export const StaffPage: React.FC = () => {
 
   const getRoleBadge = (role: string) => {
     const styles = {
-      admin: 'bg-purple-100 text-purple-800',
-      doctor: 'bg-blue-100 text-blue-800',
-      assistant: 'bg-green-100 text-green-800',
+      admin: 'bg-purple-50 text-purple-700 border-purple-200',
+      doctor: 'bg-main-10 text-main-100 border-main-100/20',
+      assistant: 'bg-secondary-10 text-secondary-100 border-secondary-100/20',
     };
     const labels = {
       admin: 'Администратор',
@@ -84,64 +85,75 @@ export const StaffPage: React.FC = () => {
       assistant: 'Ассистент',
     };
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${styles[role as keyof typeof styles]}`}>
+      <span className={`px-3 py-1 border rounded-sm text-xs font-normal ${styles[role as keyof typeof styles]}`}>
         {labels[role as keyof typeof labels]}
       </span>
     );
   };
 
   return (
-    <div className="p-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Сотрудники</h1>
-          <p className="text-gray-600 mt-1">Всего: {data?.meta.total || 0}</p>
+          <h1 className="text-2xl font-semibold text-text-100">Сотрудники</h1>
+          <p className="text-text-10 text-sm mt-1">Всего: {data?.meta.total || 0}</p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>➕ Добавить сотрудника</Button>
+        <Button onClick={() => setIsModalOpen(true)} variant="primary">
+          ➕ Добавить сотрудника
+        </Button>
       </div>
 
       {/* Filter */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Фильтр по роли</label>
-        <select
-          value={roleFilter}
-          onChange={e => setRoleFilter(e.target.value)}
-          className="block w-full md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-        >
-          <option value="">Все</option>
-          <option value="admin">Администраторы</option>
-          <option value="doctor">Врачи</option>
-          <option value="assistant">Ассистенты</option>
-        </select>
-      </div>
+      <Card padding="md">
+        <div>
+          <label className="block text-sm font-normal text-text-10 mb-2">Фильтр по роли</label>
+          <select
+            value={roleFilter}
+            onChange={e => setRoleFilter(e.target.value)}
+            className="block w-full md:w-64 px-4 py-2.5 border border-stroke rounded-sm bg-bg-white text-sm focus:outline-none focus:border-main-100 transition-smooth"
+          >
+            <option value="">Все</option>
+            <option value="admin">Администраторы</option>
+            <option value="doctor">Врачи</option>
+            <option value="assistant">Ассистенты</option>
+          </select>
+        </div>
+      </Card>
 
       {/* Users Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {users.map(user => (
-          <Card key={user.id}>
-            <div className="space-y-3">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
-                  <p className="text-sm text-gray-600">{user.email}</p>
+          <Card key={user.id} padding="md">
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 bg-main-10 rounded-sm flex items-center justify-center flex-shrink-0">
+                  <img src={doctorIcon} alt="Doctor" className="w-6 h-6" />
                 </div>
-                {getRoleBadge(user.role)}
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base font-medium text-text-100 truncate">{user.name}</h3>
+                  <p className="text-xs text-text-10 truncate">{user.email}</p>
+                  <div className="mt-1">
+                    {getRoleBadge(user.role)}
+                  </div>
+                </div>
               </div>
 
               {user.specialization && (
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Специализация:</span> {user.specialization}
-                </p>
+                <div className="text-xs">
+                  <p className="text-text-10 mb-0.5">Специализация:</p>
+                  <p className="text-text-50 font-medium">{user.specialization}</p>
+                </div>
               )}
 
               {user.phone && (
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Телефон:</span> {user.phone}
-                </p>
+                <div className="text-xs">
+                  <p className="text-text-10 mb-0.5">Телефон:</p>
+                  <p className="text-text-50">{user.phone}</p>
+                </div>
               )}
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-2 border-t border-stroke">
                 <Button
                   size="sm"
                   variant="danger"
@@ -189,13 +201,13 @@ export const StaffPage: React.FC = () => {
           />
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-normal text-text-10 mb-2">
               Роль <span className="text-red-500">*</span>
             </label>
             <select
               value={formData.role}
               onChange={e => setFormData({ ...formData, role: e.target.value as any })}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="block w-full px-4 py-2.5 border border-stroke rounded-sm bg-bg-white text-sm focus:outline-none focus:border-main-100 transition-smooth"
               required
             >
               <option value="doctor">Врач</option>
@@ -225,7 +237,7 @@ export const StaffPage: React.FC = () => {
             <Button type="button" variant="secondary" onClick={() => setIsModalOpen(false)}>
               Отмена
             </Button>
-            <Button type="submit" isLoading={createMutation.isPending}>
+            <Button type="submit" variant="primary" isLoading={createMutation.isPending}>
               Создать
             </Button>
           </div>
@@ -234,5 +246,3 @@ export const StaffPage: React.FC = () => {
     </div>
   );
 };
-
-

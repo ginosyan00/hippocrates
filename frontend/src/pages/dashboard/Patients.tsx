@@ -3,9 +3,12 @@ import { Button, Input, Card, Modal, Spinner } from '../../components/common';
 import { usePatients, useCreatePatient, useUpdatePatient, useDeletePatient } from '../../hooks/usePatients';
 import { Patient } from '../../types/api.types';
 
+// Import search icon
+import searchIcon from '../../assets/icons/search.svg';
+
 /**
- * Patients Page
- * Управление пациентами
+ * Patients Page - Figma Design
+ * Управление пациентами в новом стиле
  */
 export const PatientsPage: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -90,59 +93,65 @@ export const PatientsPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-6">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          Ошибка загрузки: {(error as any).message}
-        </div>
-      </div>
+      <Card className="bg-red-50 border-red-200">
+        <p className="text-red-600 text-sm">Ошибка загрузки: {(error as any).message}</p>
+      </Card>
     );
   }
 
   const patients = data?.patients || [];
 
   return (
-    <div className="p-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Пациенты</h1>
-          <p className="text-gray-600 mt-1">Всего: {data?.meta.total || 0}</p>
+          <h1 className="text-2xl font-semibold text-text-100">Пациенты</h1>
+          <p className="text-text-10 text-sm mt-1">Всего: {data?.meta.total || 0}</p>
         </div>
-        <Button onClick={() => handleOpenModal()}>➕ Добавить пациента</Button>
+        <Button onClick={() => handleOpenModal()} variant="primary">➕ Добавить пациента</Button>
       </div>
 
       {/* Search */}
-      <div className="mb-6">
+      <Card padding="md">
         <Input
           placeholder="Поиск по имени или телефону..."
           value={search}
           onChange={e => setSearch(e.target.value)}
+          icon={<img src={searchIcon} alt="Search" className="w-4 h-4" />}
         />
-      </div>
+      </Card>
 
       {/* Patients Grid */}
       {patients.length === 0 ? (
         <Card>
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-text-10 text-sm">
             {search ? 'Пациенты не найдены' : 'Нет пациентов. Добавьте первого!'}
           </div>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {patients.map(patient => (
-            <Card key={patient.id}>
+            <Card key={patient.id} padding="md">
               <div className="space-y-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{patient.name}</h3>
-                  <p className="text-sm text-gray-600">{patient.phone}</p>
-                  {patient.email && <p className="text-sm text-gray-600">{patient.email}</p>}
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 bg-main-10 rounded-sm flex items-center justify-center flex-shrink-0">
+                    <span className="text-base text-main-100 font-medium">
+                      {patient.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-base font-medium text-text-100 truncate">{patient.name}</h3>
+                    <p className="text-xs text-text-50">{patient.phone}</p>
+                    {patient.email && <p className="text-xs text-text-10 truncate">{patient.email}</p>}
+                  </div>
                 </div>
 
                 {patient.notes && (
-                  <p className="text-sm text-gray-500 line-clamp-2">{patient.notes}</p>
+                  <p className="text-xs text-text-10 line-clamp-2">{patient.notes}</p>
                 )}
 
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-2 pt-2 border-t border-stroke">
                   <Button size="sm" variant="secondary" onClick={() => handleOpenModal(patient)}>
                     Редактировать
                   </Button>
@@ -201,13 +210,13 @@ export const PatientsPage: React.FC = () => {
               onChange={e => setFormData({ ...formData, dateOfBirth: e.target.value })}
             />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Пол</label>
+              <label className="block text-sm font-normal text-text-10 mb-2">Пол</label>
               <select
                 value={formData.gender}
                 onChange={e =>
                   setFormData({ ...formData, gender: e.target.value as any })
                 }
-                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="block w-full px-4 py-2.5 border border-stroke rounded-sm bg-bg-white text-sm focus:outline-none focus:border-main-100 transition-smooth"
               >
                 <option value="">Не указан</option>
                 <option value="male">Мужской</option>
@@ -218,12 +227,12 @@ export const PatientsPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Заметки</label>
+            <label className="block text-sm font-normal text-text-10 mb-2">Заметки</label>
             <textarea
               value={formData.notes}
               onChange={e => setFormData({ ...formData, notes: e.target.value })}
               rows={3}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className="block w-full px-4 py-2.5 border border-stroke rounded-sm bg-bg-white text-sm focus:outline-none focus:border-main-100 transition-smooth resize-none"
               placeholder="Аллергии, особые указания..."
             />
           </div>
@@ -234,6 +243,7 @@ export const PatientsPage: React.FC = () => {
             </Button>
             <Button
               type="submit"
+              variant="primary"
               isLoading={createMutation.isPending || updateMutation.isPending}
             >
               {editingPatient ? 'Сохранить' : 'Создать'}
@@ -244,5 +254,3 @@ export const PatientsPage: React.FC = () => {
     </div>
   );
 };
-
-

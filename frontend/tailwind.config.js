@@ -7,33 +7,37 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
+        // Main color from Figma
+        main: {
+          10: '#F5F6FF',
+          100: '#3A6FF8',
         },
-        accent: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981',
-          600: '#059669',
-          700: '#047857',
-          800: '#065f46',
-          900: '#064e3b',
+        // Secondary color from Figma
+        secondary: {
+          10: '#FFF9F6',
+          100: '#14CC26',
         },
+        // Text colors from Figma
+        text: {
+          10: '#A9A9A9',
+          50: '#676767',
+          100: '#1C1C1C',
+        },
+        // Background colors from Figma
+        bg: {
+          primary: '#FBFBFB',
+          white: '#FFFFFF',
+        },
+        // Stroke/Border color from Figma
+        stroke: '#F1F1F1',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Poppins', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      borderRadius: {
+        'sm': '8px',
+        'md': '12px',
+        'lg': '15px',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
