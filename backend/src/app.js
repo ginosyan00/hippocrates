@@ -2,6 +2,8 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import { config } from './config/app.js';
+import apiRoutes from './routes/index.js';
+import { errorHandler, notFoundHandler } from './middlewares/error.middleware.js';
 
 /**
  * Express Application Setup
@@ -23,6 +25,14 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Request logging (development)
+if (config.nodeEnv === 'development') {
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    next();
+  });
+}
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({
@@ -33,51 +43,64 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API Routes (будут добавлены позже)
+// API v1 Routes
+app.use('/api/v1', apiRoutes);
+
+// API info endpoint
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Hippocrates Dental API v1.0',
+    version: '1.0.0',
+    documentation: '/api/v1',
+  });
+});
+
 app.get('/api/v1', (req, res) => {
   res.json({
     success: true,
     message: 'Hippocrates Dental API v1.0',
+    version: '1.0.0',
     endpoints: {
-      health: '/health',
-      api: '/api/v1',
-      auth: '/api/v1/auth',
-      clinics: '/api/v1/clinics',
-      users: '/api/v1/users',
-      patients: '/api/v1/patients',
-      appointments: '/api/v1/appointments',
-      public: '/api/v1/public',
+      health: 'GET /health',
+      auth: {
+        register: 'POST /api/v1/auth/register',
+        login: 'POST /api/v1/auth/login',
+        me: 'GET /api/v1/auth/me',
+      },
+      patients: {
+        list: 'GET /api/v1/patients',
+        get: 'GET /api/v1/patients/:id',
+        create: 'POST /api/v1/patients',
+        update: 'PUT /api/v1/patients/:id',
+        delete: 'DELETE /api/v1/patients/:id',
+        search: 'GET /api/v1/patients/search/phone?phone=xxx',
+      },
+      users: {
+        list: 'GET /api/v1/users',
+        doctors: 'GET /api/v1/users/doctors',
+        get: 'GET /api/v1/users/:id',
+        create: 'POST /api/v1/users',
+        update: 'PUT /api/v1/users/:id',
+        delete: 'DELETE /api/v1/users/:id',
+      },
+      appointments: {
+        list: 'GET /api/v1/appointments',
+        get: 'GET /api/v1/appointments/:id',
+        create: 'POST /api/v1/appointments',
+        update: 'PUT /api/v1/appointments/:id',
+        updateStatus: 'PATCH /api/v1/appointments/:id/status',
+        delete: 'DELETE /api/v1/appointments/:id',
+      },
     },
   });
 });
 
 // 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: {
-      code: 'NOT_FOUND',
-      message: `Route ${req.method} ${req.path} not found`,
-    },
-  });
-});
+app.use(notFoundHandler);
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('[ERROR]', err);
-
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal server error';
-
-  res.status(statusCode).json({
-    success: false,
-    error: {
-      code: err.code || 'INTERNAL_ERROR',
-      message: message,
-      ...(config.nodeEnv === 'development' && { stack: err.stack }),
-    },
-  });
-});
+// Global error handler
+app.use(errorHandler);
 
 export default app;
 
