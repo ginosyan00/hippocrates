@@ -6,6 +6,7 @@ import { DashboardPage } from './pages/dashboard/Dashboard';
 import { PatientsPage } from './pages/dashboard/Patients';
 import { AppointmentsPage } from './pages/dashboard/Appointments';
 import { StaffPage } from './pages/dashboard/Staff';
+import { PharmacyPage } from './pages/dashboard/Pharmacy';
 import { HomePage } from './pages/public/Home';
 import { ClinicsPage } from './pages/public/Clinics';
 import { ClinicPage } from './pages/public/ClinicPage';
@@ -42,6 +43,8 @@ function App() {
           <Route path="patients" element={<PatientsPage />} />
           <Route path="appointments" element={<AppointmentsPage />} />
           <Route path="staff" element={<StaffPage />} />
+          <Route path="pharmacy" element={<PharmacyPage />} />
+          <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">Аналитика (в разработке)</h1></div>} />
           <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Настройки (в разработке)</h1></div>} />
         </Route>
 

@@ -46,7 +46,7 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto animate-fade-in">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-text-100 bg-opacity-50 transition-opacity"
@@ -56,7 +56,7 @@ export const Modal: React.FC<ModalProps> = ({
       {/* Modal */}
       <div className="flex min-h-screen items-center justify-center p-4">
         <div
-          className={`relative bg-bg-white border border-stroke rounded-lg ${sizeStyles[size]} w-full max-h-[90vh] overflow-y-auto`}
+          className={`relative bg-bg-white border border-stroke rounded-lg ${sizeStyles[size]} w-full max-h-[90vh] overflow-y-auto animate-scale-in shadow-xl`}
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}

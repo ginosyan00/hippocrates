@@ -46,7 +46,7 @@ model User {
   name           String
   email          String    @unique
   passwordHash   String
-  role           Role
+  role           String  // admin | doctor | assistant
   specialization String?
   phone          String?
   avatar         String?
@@ -63,12 +63,6 @@ model User {
   @@map("users")
 }
 
-enum Role {
-  admin
-  doctor
-  assistant
-}
-
 // ============================================
 // PATIENT (Пациент)
 // ============================================
@@ -80,7 +74,7 @@ model Patient {
   phone        String
   email        String?
   dateOfBirth  DateTime?
-  gender       Gender?
+  gender       String?  // male | female | other
   notes        String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -94,12 +88,6 @@ model Patient {
   @@map("patients")
 }
 
-enum Gender {
-  male
-  female
-  other
-}
-
 // ============================================
 // APPOINTMENT (Приём)
 // ============================================
@@ -111,7 +99,7 @@ model Appointment {
   patientId       String
   appointmentDate DateTime
   duration        Int       @default(30)
-  status          AppointmentStatus @default(pending)
+  status          String  @default("pending")  // pending | confirmed | completed | cancelled
   notes           String?
   reason          String?
   createdAt       DateTime  @default(now())
@@ -128,12 +116,5 @@ model Appointment {
   @@index([appointmentDate])
   @@index([status])
   @@map("appointments")
-}
-
-enum AppointmentStatus {
-  pending
-  confirmed
-  completed
-  cancelled
 }
 

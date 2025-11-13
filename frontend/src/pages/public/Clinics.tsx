@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Card, Input, Spinner } from '../../components/common';
+import { Button, Card, Spinner } from '../../components/common';
 import { useClinics, useCities } from '../../hooks/usePublic';
 
+// Import icons
+import brainLogo from '../../assets/icons/brain-logo.svg';
+import searchIcon from '../../assets/icons/search.svg';
+
 /**
- * Clinics Page
- * Каталог клиник
+ * Clinics Page - Figma Design Style
+ * Каталог клиник в стиле медицинского дашборда
  */
 export const ClinicsPage: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState<string>('');
@@ -17,114 +21,161 @@ export const ClinicsPage: React.FC = () => {
   const clinics = data?.clinics || [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/">
-            <h1 className="text-2xl font-bold text-primary-600">🦷 Hippocrates</h1>
+    <div className="min-h-screen bg-bg-primary">
+      {/* Figma Style Header */}
+      <header className="bg-bg-white border-b border-stroke sticky top-0 z-50">
+        <div className="container mx-auto px-8 py-5 flex justify-between items-center">
+          <Link to="/" className="flex items-center gap-3">
+            <img src={brainLogo} alt="Logo" className="w-10 h-10" />
+            <div>
+              <h1 className="text-[21px] font-semibold text-main-100">Hippocrates</h1>
+              <p className="text-[10px] text-text-10">Dental Platform</p>
+            </div>
           </Link>
           <Link to="/login">
-            <Button variant="secondary">Вход для клиник</Button>
+            <Button className="text-sm font-normal bg-main-10 text-main-100 hover:bg-main-100 hover:text-white">
+              Вход для клиник
+            </Button>
           </Link>
         </div>
       </header>
 
-      {/* Main */}
-      <main className="container mx-auto px-4 py-8">
+      {/* Main Content */}
+      <main className="container mx-auto px-8 py-12">
+        {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Стоматологические клиники</h1>
-          <p className="text-gray-600">Найдите клинику рядом с вами и запишитесь онлайн</p>
+          <h1 className="text-4xl font-semibold text-text-100 mb-3">Стоматологические клиники</h1>
+          <p className="text-lg text-text-50">Найдите клинику рядом с вами и запишитесь онлайн</p>
         </div>
 
-        {/* Filter */}
-        <div className="mb-8">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Город</label>
-          <select
-            value={selectedCity}
-            onChange={e => setSelectedCity(e.target.value)}
-            className="block w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-          >
-            <option value="">Все города</option>
-            {cities.map(city => (
-              <option key={city} value={city}>
-                {city}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Filter Card */}
+        <Card padding="md" className="mb-8 max-w-md">
+          <label className="block text-sm font-normal text-text-10 mb-2">Фильтр по городу</label>
+          <div className="relative">
+            <img 
+              src={searchIcon} 
+              alt="Search" 
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+            />
+            <select
+              value={selectedCity}
+              onChange={e => setSelectedCity(e.target.value)}
+              className="block w-full pl-10 pr-4 py-2.5 border border-stroke rounded-sm bg-bg-white text-sm text-text-100 focus:outline-none focus:border-main-100 transition-smooth"
+            >
+              <option value="">Все города</option>
+              {cities.map(city => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+          </div>
+        </Card>
 
-        {/* Loading */}
+        {/* Loading State */}
         {isLoading && (
-          <div className="flex justify-center py-12">
+          <div className="flex justify-center py-20">
             <Spinner size="lg" />
           </div>
         )}
 
-        {/* Error */}
+        {/* Error State */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-            Ошибка загрузки клиник
-          </div>
+          <Card className="bg-red-50 border-red-200">
+            <p className="text-red-600 text-sm">Ошибка загрузки клиник. Попробуйте позже.</p>
+          </Card>
         )}
 
         {/* Clinics Grid */}
         {!isLoading && !error && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {clinics.length === 0 ? (
-              <div className="col-span-full text-center py-12 text-gray-500">
-                Клиники не найдены
-              </div>
-            ) : (
-              clinics.map(clinic => (
-                <Card key={clinic.id}>
-                  <div className="space-y-3">
-                    {/* Clinic Name */}
-                    <h3 className="text-xl font-bold text-gray-900">{clinic.name}</h3>
+          <>
+            {/* Results Count */}
+            <div className="mb-6">
+              <p className="text-sm text-text-10">
+                Найдено клиник: <span className="font-medium text-text-100">{clinics.length}</span>
+              </p>
+            </div>
 
-                    {/* Info */}
-                    <div className="space-y-1 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {clinics.length === 0 ? (
+                <div className="col-span-full">
+                  <Card padding="lg">
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-main-10 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                        <svg className="w-8 h-8 text-main-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        {clinic.city}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
-                        {clinic.phone}
+                      <p className="text-text-50 text-lg">Клиники не найдены</p>
+                      <p className="text-text-10 text-sm mt-2">Попробуйте изменить фильтр</p>
+                    </div>
+                  </Card>
+                </div>
+              ) : (
+                clinics.map(clinic => (
+                  <Card key={clinic.id} padding="none" className="overflow-hidden hover:shadow-figma-md transition-smooth">
+                    <div className="p-6 space-y-4">
+                      {/* Clinic Name */}
+                      <h3 className="text-lg font-medium text-text-100">{clinic.name}</h3>
+
+                      {/* Info */}
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-text-50">
+                          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span>{clinic.city}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-text-50">
+                          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                          <span>{clinic.phone}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-text-50">
+                          <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          <span className="truncate">{clinic.email}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        {clinic.email}
-                      </div>
+
+                      {/* About */}
+                      {clinic.about && (
+                        <p className="text-sm text-text-10 line-clamp-2 leading-relaxed">
+                          {clinic.about}
+                        </p>
+                      )}
                     </div>
 
-                    {/* About */}
-                    {clinic.about && (
-                      <p className="text-sm text-gray-700 line-clamp-2">{clinic.about}</p>
-                    )}
-
-                    {/* Action */}
-                    <Link to={`/clinic/${clinic.slug}`}>
-                      <Button className="w-full" variant="primary">
-                        📅 Записаться на приём
-                      </Button>
-                    </Link>
-                  </div>
-                </Card>
-              ))
-            )}
-          </div>
+                    {/* Action Button */}
+                    <div className="px-6 pb-6">
+                      <Link to={`/clinic/${clinic.slug}`}>
+                        <Button 
+                          className="w-full text-sm font-normal bg-main-10 text-main-100 hover:bg-main-100 hover:text-white"
+                          size="md"
+                        >
+                          Записаться на приём
+                        </Button>
+                      </Link>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+          </>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="bg-bg-white border-t border-stroke py-8 mt-20">
+        <div className="container mx-auto px-8 text-center">
+          <p className="text-text-10 text-sm">
+            © 2025 Hippocrates Dental. Все права защищены.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
-
-

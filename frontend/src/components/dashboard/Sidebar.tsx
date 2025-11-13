@@ -7,6 +7,7 @@ import { useUIStore } from '../../store/useUIStore';
 import dashboardIcon from '../../assets/icons/dashboard.svg';
 import calendarIcon from '../../assets/icons/calendar.svg';
 import doctorIcon from '../../assets/icons/doctor.svg';
+import pharmacyIcon from '../../assets/icons/pharmacy.svg';
 import patientIcon from '../../assets/icons/patient.svg';
 import analyticsIcon from '../../assets/icons/analytics.svg';
 import brainLogo from '../../assets/icons/brain-logo.svg';
@@ -31,7 +32,7 @@ export const Sidebar: React.FC = () => {
   }
 
   return (
-    <aside className="w-64 bg-bg-primary border-r border-stroke min-h-screen flex flex-col">
+    <aside className="hidden md:flex w-64 bg-bg-primary border-r border-stroke min-h-screen flex-col">
       {/* Logo Section */}
       <div className="px-10 pt-6 pb-16">
         <div className="flex items-center gap-1">
@@ -59,6 +60,11 @@ export const Sidebar: React.FC = () => {
               <span className="text-sm">Doctor</span>
             </NavLink>
           )}
+
+          <NavLink to="/dashboard/pharmacy" className={navLinkClass}>
+            <img src={pharmacyIcon} alt="Pharmacy" className="w-6 h-6" />
+            <span className="text-sm">Pharmacy</span>
+          </NavLink>
 
           <NavLink to="/dashboard/patients" className={navLinkClass}>
             <img src={patientIcon} alt="Patients" className="w-6 h-6" />

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Card } from '../../components/common';
+import { DoctorProfile } from '../../components/dashboard/DoctorProfile';
+import { AppointmentChart } from '../../components/dashboard/AppointmentChart';
 import { useAuthStore } from '../../store/useAuthStore';
 
 // Import icons
@@ -37,9 +39,11 @@ export const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="flex flex-col lg:flex-row gap-6">
+      {/* Main Content - Left Side */}
+      <div className="flex-1 space-y-6">
+        {/* Stats Cards Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Payments */}
         <Card padding="none" className="p-5">
           <div className="space-y-4">
@@ -81,31 +85,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Appointment Chart */}
-      <Card padding="none" className="p-5">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-medium text-text-50">Appointment</h3>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-normal text-text-50">Sort by</span>
-            <select className="text-xs border border-stroke rounded-sm px-3 py-2 bg-bg-white text-text-50 focus:outline-none focus:border-main-100">
-              <option>Monthly</option>
-              <option>Weekly</option>
-              <option>Daily</option>
-            </select>
-          </div>
-        </div>
-        
-        {/* Chart Placeholder */}
-        <div className="h-64 bg-gradient-to-b from-main-10/50 to-transparent border border-stroke rounded-sm flex items-center justify-center">
-          <p className="text-text-10 text-sm">Chart visualization would go here</p>
-        </div>
-        
-        {/* Months Legend */}
-        <div className="flex justify-between mt-4 px-4">
-          {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map(month => (
-            <span key={month} className="text-xs text-text-10">{month}</span>
-          ))}
-        </div>
-      </Card>
+      <AppointmentChart />
 
       {/* Upcoming Appointments Table */}
       <Card padding="none" className="p-5">
@@ -142,6 +122,12 @@ export const DashboardPage: React.FC = () => {
           ))}
         </div>
       </Card>
+      </div>
+
+      {/* Right Sidebar - Doctor Profile */}
+      <div className="w-full lg:w-[357px] flex-shrink-0">
+        <DoctorProfile />
+      </div>
     </div>
   );
 };

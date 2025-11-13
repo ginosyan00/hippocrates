@@ -30,6 +30,32 @@ export default {
         },
         // Stroke/Border color from Figma
         stroke: '#F1F1F1',
+        // Primary colors for landing page (based on Figma)
+        primary: {
+          50: '#F0F5FF',
+          100: '#E5EDFF',
+          200: '#C7D7FE',
+          300: '#A5BBFE',
+          400: '#7B96FD',
+          500: '#3A6FF8',
+          600: '#2952D6',
+          700: '#1E3FB3',
+          800: '#162E8C',
+          900: '#0F2166',
+        },
+        // Accent colors for landing page
+        accent: {
+          50: '#FFF9F6',
+          100: '#FFF3ED',
+          200: '#FFE4D5',
+          300: '#FFD0B5',
+          400: '#FFB088',
+          500: '#FF8A4C',
+          600: '#F76B1C',
+          700: '#D84F0A',
+          800: '#B03C07',
+          900: '#8B2E05',
+        },
       },
       fontFamily: {
         sans: ['Poppins', 'system-ui', '-apple-system', 'sans-serif'],
@@ -38,6 +64,11 @@ export default {
         'sm': '8px',
         'md': '12px',
         'lg': '15px',
+      },
+      boxShadow: {
+        'figma': '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
+        'figma-md': '0 4px 12px 0 rgba(0, 0, 0, 0.08)',
+        'figma-lg': '0 10px 24px 0 rgba(0, 0, 0, 0.12)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
