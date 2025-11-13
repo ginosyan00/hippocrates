@@ -110,3 +110,59 @@ export async function remove(req, res, next) {
   }
 }
 
+/**
+ * GET /api/v1/users/pending
+ * Получить всех пользователей со статусом PENDING (только для ADMIN)
+ */
+export async function getPendingUsers(req, res, next) {
+  try {
+    console.log('🔵 [USER CONTROLLER] Запрос pending пользователей');
+
+    const users = await userService.findPendingUsers();
+
+    successResponse(res, users, 200);
+  } catch (error) {
+    console.log('🔴 [USER CONTROLLER] Ошибка:', error.message);
+    next(error);
+  }
+}
+
+/**
+ * POST /api/v1/users/:id/approve
+ * Одобрить пользователя (PENDING -> ACTIVE) (только для ADMIN)
+ */
+export async function approveUser(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    console.log('🔵 [USER CONTROLLER] Одобрение пользователя:', id);
+
+    const user = await userService.approveUser(id);
+
+    successResponse(res, user, 200);
+  } catch (error) {
+    console.log('🔴 [USER CONTROLLER] Ошибка:', error.message);
+    next(error);
+  }
+}
+
+/**
+ * POST /api/v1/users/:id/reject
+ * Отклонить пользователя (PENDING -> REJECTED) (только для ADMIN)
+ */
+export async function rejectUser(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    console.log('🔵 [USER CONTROLLER] Отклонение пользователя:', id);
+
+    const user = await userService.rejectUser(id, reason);
+
+    successResponse(res, user, 200);
+  } catch (error) {
+    console.log('🔴 [USER CONTROLLER] Ошибка:', error.message);
+    next(error);
+  }
+}
+

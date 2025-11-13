@@ -7,25 +7,32 @@ import { unauthorizedResponse } from '../utils/response.util.js';
  */
 export function authenticate(req, res, next) {
   try {
+    console.log('🔵 [AUTH MIDDLEWARE] Проверка токена...');
+
     // Извлекаем токен из header
     const token = extractTokenFromHeader(req.headers.authorization);
 
     if (!token) {
+      console.log('🔴 [AUTH MIDDLEWARE] Токен не предоставлен');
       return unauthorizedResponse(res, 'No token provided');
     }
 
     // Верифицируем токен
     const decoded = verifyToken(token);
 
-    // Добавляем данные пользователя в request
+    console.log('✅ [AUTH MIDDLEWARE] Токен валиден:', { userId: decoded.userId, role: decoded.role, status: decoded.status });
+
+    // Добавляем данные пользователя в request (теперь с status)
     req.user = {
       userId: decoded.userId,
       clinicId: decoded.clinicId,
       role: decoded.role,
+      status: decoded.status,
     };
 
     next();
   } catch (error) {
+    console.log('🔴 [AUTH MIDDLEWARE] Ошибка верификации токена:', error.message);
     return unauthorizedResponse(res, error.message);
   }
 }
@@ -38,11 +45,15 @@ export function authenticate(req, res, next) {
  */
 export function authorize(...allowedRoles) {
   return (req, res, next) => {
+    console.log('🔵 [AUTHORIZE MIDDLEWARE] Проверка роли:', { userRole: req.user?.role, allowedRoles });
+
     if (!req.user) {
+      console.log('🔴 [AUTHORIZE MIDDLEWARE] Пользователь не аутентифицирован');
       return unauthorizedResponse(res, 'User not authenticated');
     }
 
     if (!allowedRoles.includes(req.user.role)) {
+      console.log('🔴 [AUTHORIZE MIDDLEWARE] Доступ запрещен:', { userRole: req.user.role, allowedRoles });
       return res.status(403).json({
         success: false,
         error: {
@@ -52,6 +63,7 @@ export function authorize(...allowedRoles) {
       });
     }
 
+    console.log('✅ [AUTHORIZE MIDDLEWARE] Доступ разрешен');
     next();
   };
 }

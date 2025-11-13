@@ -94,14 +94,30 @@ export interface DaySchedule {
 
 export interface User {
   id: string;
-  clinicId: string;
+  clinicId?: string | null;
   name: string;
   email: string;
   role: UserRole;
-  specialization?: string;
+  status: UserStatus;
+  
+  // Common fields
   phone?: string;
   avatar?: string;
-  isActive: boolean;
+  dateOfBirth?: Date | string;
+  gender?: 'male' | 'female' | 'other';
+  
+  // Doctor-specific fields
+  specialization?: string;
+  licenseNumber?: string;
+  experience?: number;
+  
+  // Partner-specific fields
+  organizationName?: string;
+  organizationType?: 'pharmacy' | 'laboratory' | 'insurance';
+  inn?: string;
+  address?: string;
+  
+  // System fields
   createdAt: Date;
   updatedAt: Date;
   clinic?: {
@@ -112,9 +128,21 @@ export interface User {
 }
 
 export enum UserRole {
+  PATIENT = 'PATIENT',
+  DOCTOR = 'DOCTOR',
+  PARTNER = 'PARTNER',
+  ADMIN = 'ADMIN',
+  // Старые роли для обратной совместимости
   Admin = 'admin',
   Doctor = 'doctor',
   Assistant = 'assistant',
+}
+
+export enum UserStatus {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  REJECTED = 'REJECTED',
 }
 
 export interface Patient {

@@ -247,3 +247,126 @@ export async function findDoctors(clinicId) {
   });
 }
 
+/**
+ * Получить всех пользователей со статусом PENDING
+ * @returns {Promise<array>} Список пользователей на одобрении
+ */
+export async function findPendingUsers() {
+  console.log('🔵 [USER SERVICE] Получение pending пользователей');
+  
+  const users = await prisma.user.findMany({
+    where: {
+      status: 'PENDING',
+      role: {
+        in: ['DOCTOR', 'PARTNER'], // Только врачи и партнеры требуют одобрения
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true,
+      phone: true,
+      // Doctor fields
+      specialization: true,
+      licenseNumber: true,
+      experience: true,
+      // Partner fields
+      organizationName: true,
+      organizationType: true,
+      inn: true,
+      address: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  console.log(`✅ [USER SERVICE] Найдено ${users.length} pending пользователей`);
+  return users;
+}
+
+/**
+ * Одобрить пользователя (PENDING -> ACTIVE)
+ * @param {string} userId - ID пользователя
+ * @returns {Promise<object>} Обновленный пользователь
+ */
+export async function approveUser(userId) {
+  console.log('🔵 [USER SERVICE] Одобрение пользователя:', userId);
+
+  // Проверяем что пользователь существует и в статусе PENDING
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    console.log('🔴 [USER SERVICE] Пользователь не найден');
+    throw new Error('User not found');
+  }
+
+  if (user.status !== 'PENDING') {
+    console.log('🔴 [USER SERVICE] Пользователь не в статусе PENDING');
+    throw new Error('User is not pending approval');
+  }
+
+  // Обновляем статус на ACTIVE
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { status: 'ACTIVE' },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true,
+    },
+  });
+
+  console.log('✅ [USER SERVICE] Пользователь одобрен:', updatedUser.id);
+  return updatedUser;
+}
+
+/**
+ * Отклонить пользователя (PENDING -> REJECTED)
+ * @param {string} userId - ID пользователя
+ * @param {string} reason - Причина отклонения (опционально)
+ * @returns {Promise<object>} Обновленный пользователь
+ */
+export async function rejectUser(userId, reason = null) {
+  console.log('🔵 [USER SERVICE] Отклонение пользователя:', userId);
+
+  // Проверяем что пользователь существует и в статусе PENDING
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    console.log('🔴 [USER SERVICE] Пользователь не найден');
+    throw new Error('User not found');
+  }
+
+  if (user.status !== 'PENDING') {
+    console.log('🔴 [USER SERVICE] Пользователь не в статусе PENDING');
+    throw new Error('User is not pending approval');
+  }
+
+  // Обновляем статус на REJECTED
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { 
+      status: 'REJECTED',
+      // Можно добавить поле для причины отклонения в будущем
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true,
+    },
+  });
+
+  console.log('✅ [USER SERVICE] Пользователь отклонен:', updatedUser.id);
+  return updatedUser;
+}
+

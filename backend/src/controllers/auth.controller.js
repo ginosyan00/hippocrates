@@ -8,7 +8,7 @@ import { successResponse, errorResponse } from '../utils/response.util.js';
 
 /**
  * POST /api/v1/auth/register
- * Регистрация новой клиники
+ * Регистрация новой клиники (старый endpoint - сохранен для совместимости)
  */
 export async function register(req, res, next) {
   try {
@@ -18,6 +18,25 @@ export async function register(req, res, next) {
 
     successResponse(res, result, 201);
   } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * POST /api/v1/auth/register-user
+ * Регистрация нового пользователя (Patient, Doctor, Partner)
+ */
+export async function registerUser(req, res, next) {
+  try {
+    console.log('🔵 [AUTH CONTROLLER] Получен запрос на регистрацию:', { role: req.body.role, email: req.body.email });
+
+    const result = await authService.registerUser(req.body);
+
+    console.log('✅ [AUTH CONTROLLER] Регистрация успешна:', { userId: result.user.id, role: result.user.role });
+
+    successResponse(res, result, 201);
+  } catch (error) {
+    console.log('🔴 [AUTH CONTROLLER] Ошибка регистрации:', error.message);
     next(error);
   }
 }

@@ -19,11 +19,32 @@ router.use(tenantMiddleware);
 router.get('/doctors', userController.getDoctors);
 
 /**
+ * GET /api/v1/users/pending
+ * Получить список пользователей со статусом PENDING
+ * Доступ: только ADMIN
+ */
+router.get('/pending', authorize('ADMIN'), userController.getPendingUsers);
+
+/**
+ * POST /api/v1/users/:id/approve
+ * Одобрить пользователя (PENDING -> ACTIVE)
+ * Доступ: только ADMIN
+ */
+router.post('/:id/approve', authorize('ADMIN'), userController.approveUser);
+
+/**
+ * POST /api/v1/users/:id/reject
+ * Отклонить пользователя (PENDING -> REJECTED)
+ * Доступ: только ADMIN
+ */
+router.post('/:id/reject', authorize('ADMIN'), userController.rejectUser);
+
+/**
  * GET /api/v1/users
  * Получить список пользователей
  * Доступ: только admin
  */
-router.get('/', authorize('admin'), userController.getAll);
+router.get('/', authorize('admin', 'ADMIN'), userController.getAll);
 
 /**
  * GET /api/v1/users/:id

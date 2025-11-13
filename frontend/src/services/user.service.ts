@@ -62,6 +62,36 @@ export const userService = {
   async delete(id: string): Promise<void> {
     await api.delete(`/api/v1/users/${id}`);
   },
+
+  /**
+   * Получить всех пользователей со статусом PENDING (только для ADMIN)
+   */
+  async getPendingUsers(): Promise<User[]> {
+    console.log('🔵 [USER SERVICE] Запрос pending пользователей');
+    const { data } = await api.get<ApiResponse<User[]>>('/api/v1/users/pending');
+    console.log('✅ [USER SERVICE] Получено pending:', data.data.length);
+    return data.data;
+  },
+
+  /**
+   * Одобрить пользователя (PENDING -> ACTIVE) (только для ADMIN)
+   */
+  async approveUser(id: string): Promise<User> {
+    console.log('🔵 [USER SERVICE] Одобрение пользователя:', id);
+    const { data } = await api.post<ApiResponse<User>>(`/api/v1/users/${id}/approve`);
+    console.log('✅ [USER SERVICE] Пользователь одобрен');
+    return data.data;
+  },
+
+  /**
+   * Отклонить пользователя (PENDING -> REJECTED) (только для ADMIN)
+   */
+  async rejectUser(id: string, reason?: string): Promise<User> {
+    console.log('🔵 [USER SERVICE] Отклонение пользователя:', id);
+    const { data } = await api.post<ApiResponse<User>>(`/api/v1/users/${id}/reject`, { reason });
+    console.log('✅ [USER SERVICE] Пользователь отклонен');
+    return data.data;
+  },
 };
 
 

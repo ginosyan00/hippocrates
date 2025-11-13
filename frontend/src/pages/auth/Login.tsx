@@ -26,10 +26,37 @@ export const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     try {
+      console.log('🔵 [LOGIN] Попытка входа:', email);
       const response = await authService.login({ email, password });
+      
+      console.log('✅ [LOGIN] Вход успешен:', { role: response.user.role, status: response.user.status });
+      
       setAuth(response.user, response.token);
-      navigate('/dashboard');
+
+      // Role-based redirect
+      if (response.user.status === 'PENDING') {
+        // Пользователи со статусом PENDING
+        console.log('⏳ [LOGIN] Redirect -> /pending-approval');
+        navigate('/pending-approval');
+      } else if (response.user.role === 'PATIENT') {
+        console.log('👤 [LOGIN] Redirect -> /dashboard/patient');
+        navigate('/dashboard/patient');
+      } else if (response.user.role === 'DOCTOR') {
+        console.log('⚕️ [LOGIN] Redirect -> /dashboard/doctor');
+        navigate('/dashboard/doctor');
+      } else if (response.user.role === 'PARTNER') {
+        console.log('🏢 [LOGIN] Redirect -> /dashboard/partner');
+        navigate('/dashboard/partner');
+      } else if (response.user.role === 'ADMIN') {
+        console.log('🔑 [LOGIN] Redirect -> /dashboard/admin');
+        navigate('/dashboard/admin');
+      } else {
+        // Fallback для старых пользователей
+        console.log('📊 [LOGIN] Redirect -> /dashboard (fallback)');
+        navigate('/dashboard');
+      }
     } catch (err: any) {
+      console.log('🔴 [LOGIN] Ошибка:', err.message);
       setError(err.message || 'Ошибка авторизации');
     } finally {
       setIsLoading(false);
@@ -82,8 +109,12 @@ export const LoginPage: React.FC = () => {
 
             <div className="text-center text-xs text-text-10">
               Нет аккаунта?{' '}
-              <Link to="/register" className="text-main-100 hover:underline font-medium">
-                Зарегистрировать клинику
+              <Link to="/register-user" className="text-main-100 hover:underline font-medium">
+                Зарегистрироваться
+              </Link>
+              {' • '}
+              <Link to="/register" className="text-text-10 hover:underline">
+                Клиника
               </Link>
             </div>
 

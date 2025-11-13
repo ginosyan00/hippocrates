@@ -16,13 +16,26 @@ export const authService = {
   },
 
   /**
-   * Регистрация клиники
+   * Регистрация клиники (старый метод)
    */
   async register(registerData: RegisterRequest): Promise<RegisterResponse> {
     const { data } = await api.post<ApiResponse<RegisterResponse>>(
       '/api/v1/auth/register',
       registerData
     );
+    return data.data;
+  },
+
+  /**
+   * Регистрация пользователя (Patient, Doctor, Partner)
+   */
+  async registerUser(userData: any): Promise<LoginResponse> {
+    console.log('🔵 [AUTH SERVICE] Отправка регистрации пользователя:', userData);
+    const { data } = await api.post<ApiResponse<LoginResponse>>(
+      '/api/v1/auth/register-user',
+      userData
+    );
+    console.log('✅ [AUTH SERVICE] Регистрация успешна:', data.data);
     return data.data;
   },
 
