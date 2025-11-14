@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DashboardLayout } from '../../components/dashboard/DashboardLayout';
+import { NewDashboardLayout } from '../../components/dashboard/NewDashboardLayout';
 import { Card, Button } from '../../components/common';
 import { useAuthStore } from '../../store/useAuthStore';
 import { userService } from '../../services/user.service';
@@ -64,7 +64,7 @@ export const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <DashboardLayout>
+    <NewDashboardLayout>
       <div className="space-y-6">
         {/* Welcome Header */}
         <div className="bg-gradient-to-r from-red-500 via-purple-500 to-indigo-500 rounded-xl p-6 text-white">
@@ -328,6 +328,6 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </NewDashboardLayout>
   );
 };

@@ -19,7 +19,7 @@ export const appointmentService = {
     limit?: number;
   }): Promise<PaginatedResponse<Appointment>> {
     const { data } = await api.get<ApiResponse<PaginatedResponse<Appointment>>>(
-      '/api/v1/appointments',
+      '/appointments',
       { params }
     );
     return data.data;
@@ -29,7 +29,7 @@ export const appointmentService = {
    * Получить приём по ID
    */
   async getById(id: string): Promise<Appointment> {
-    const { data } = await api.get<ApiResponse<Appointment>>(`/api/v1/appointments/${id}`);
+    const { data } = await api.get<ApiResponse<Appointment>>(`/appointments/${id}`);
     return data.data;
   },
 
@@ -43,7 +43,7 @@ export const appointmentService = {
     duration?: number;
     reason?: string;
   }): Promise<Appointment> {
-    const { data } = await api.post<ApiResponse<Appointment>>('/api/v1/appointments', appointment);
+    const { data } = await api.post<ApiResponse<Appointment>>('/appointments', appointment);
     return data.data;
   },
 
@@ -51,7 +51,7 @@ export const appointmentService = {
    * Обновить приём
    */
   async update(id: string, appointment: Partial<Appointment>): Promise<Appointment> {
-    const { data } = await api.put<ApiResponse<Appointment>>(`/api/v1/appointments/${id}`, appointment);
+    const { data } = await api.put<ApiResponse<Appointment>>(`/appointments/${id}`, appointment);
     return data.data;
   },
 
@@ -60,7 +60,7 @@ export const appointmentService = {
    */
   async updateStatus(id: string, status: string): Promise<Appointment> {
     const { data } = await api.patch<ApiResponse<Appointment>>(
-      `/api/v1/appointments/${id}/status`,
+      `/appointments/${id}/status`,
       { status }
     );
     return data.data;
@@ -70,7 +70,7 @@ export const appointmentService = {
    * Удалить приём
    */
   async delete(id: string): Promise<void> {
-    await api.delete(`/api/v1/appointments/${id}`);
+    await api.delete(`/appointments/${id}`);
   },
 };
 

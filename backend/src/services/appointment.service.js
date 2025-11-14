@@ -191,8 +191,8 @@ export async function create(clinicId, data) {
     where: {
       id: data.doctorId,
       clinicId,
-      role: 'doctor',
-      isActive: true,
+      role: 'DOCTOR',
+      status: 'ACTIVE',
     },
   });
 

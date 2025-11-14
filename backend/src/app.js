@@ -13,10 +13,34 @@ const app = express();
 // Security headers
 app.use(helmet());
 
-// CORS
+// CORS - Smart origin handling for development and production
 app.use(
   cors({
-    origin: config.corsOrigin,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, Postman, curl)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      // Development mode: allow all localhost origins
+      if (config.nodeEnv === 'development') {
+        const localhostRegex = /^http:\/\/localhost:\d+$/;
+        if (localhostRegex.test(origin)) {
+          console.log(`✅ [CORS] Allowed origin: ${origin}`);
+          return callback(null, true);
+        }
+      }
+
+      // Production mode or non-localhost: strict origin check
+      if (config.corsOrigin === origin) {
+        console.log(`✅ [CORS] Allowed origin: ${origin}`);
+        return callback(null, true);
+      }
+
+      // Reject unauthorized origins
+      console.log(`❌ [CORS] Blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   })
 );

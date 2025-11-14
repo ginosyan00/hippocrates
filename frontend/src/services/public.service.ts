@@ -12,7 +12,7 @@ export const publicService = {
    */
   async getClinics(params?: { city?: string; page?: number; limit?: number }): Promise<PaginatedResponse<Clinic>> {
     const { data } = await api.get<ApiResponse<PaginatedResponse<Clinic>>>(
-      '/api/v1/public/clinics',
+      '/public/clinics',
       { params }
     );
     return data.data;
@@ -22,7 +22,7 @@ export const publicService = {
    * Получить клинику по slug
    */
   async getClinicBySlug(slug: string): Promise<Clinic> {
-    const { data } = await api.get<ApiResponse<Clinic>>(`/api/v1/public/clinics/${slug}`);
+    const { data } = await api.get<ApiResponse<Clinic>>(`/public/clinics/${slug}`);
     return data.data;
   },
 
@@ -30,7 +30,7 @@ export const publicService = {
    * Получить врачей клиники
    */
   async getClinicDoctors(slug: string): Promise<User[]> {
-    const { data } = await api.get<ApiResponse<User[]>>(`/api/v1/public/clinics/${slug}/doctors`);
+    const { data } = await api.get<ApiResponse<User[]>>(`/public/clinics/${slug}/doctors`);
     return data.data;
   },
 
@@ -38,7 +38,7 @@ export const publicService = {
    * Получить список городов
    */
   async getCities(): Promise<string[]> {
-    const { data } = await api.get<ApiResponse<string[]>>('/api/v1/public/cities');
+    const { data } = await api.get<ApiResponse<string[]>>('/public/cities');
     return data.data;
   },
 
@@ -57,7 +57,7 @@ export const publicService = {
     reason?: string;
   }): Promise<any> {
     const { data } = await api.post<ApiResponse<any>>(
-      '/api/v1/public/appointments',
+      '/public/appointments',
       appointmentData
     );
     return data.data;

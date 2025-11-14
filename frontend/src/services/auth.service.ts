@@ -11,7 +11,7 @@ export const authService = {
    * Авторизация
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const { data } = await api.post<ApiResponse<LoginResponse>>('/api/v1/auth/login', credentials);
+    const { data } = await api.post<ApiResponse<LoginResponse>>('/auth/login', credentials);
     return data.data;
   },
 
@@ -20,7 +20,7 @@ export const authService = {
    */
   async register(registerData: RegisterRequest): Promise<RegisterResponse> {
     const { data } = await api.post<ApiResponse<RegisterResponse>>(
-      '/api/v1/auth/register',
+      '/auth/register',
       registerData
     );
     return data.data;
@@ -32,7 +32,7 @@ export const authService = {
   async registerUser(userData: any): Promise<LoginResponse> {
     console.log('🔵 [AUTH SERVICE] Отправка регистрации пользователя:', userData);
     const { data } = await api.post<ApiResponse<LoginResponse>>(
-      '/api/v1/auth/register-user',
+      '/auth/register-user',
       userData
     );
     console.log('✅ [AUTH SERVICE] Регистрация успешна:', data.data);
@@ -43,7 +43,7 @@ export const authService = {
    * Получить текущего пользователя
    */
   async getMe(): Promise<User> {
-    const { data } = await api.get<ApiResponse<User>>('/api/v1/auth/me');
+    const { data } = await api.get<ApiResponse<User>>('/auth/me');
     return data.data;
   },
 };

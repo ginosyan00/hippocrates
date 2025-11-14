@@ -27,8 +27,8 @@ export const createUserSchema = Joi.object({
         'Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number',
       'any.required': 'Password is required',
     }),
-  role: Joi.string().valid('admin', 'doctor', 'assistant').required().messages({
-    'any.only': 'Role must be one of: admin, doctor, assistant',
+  role: Joi.string().valid('ADMIN', 'DOCTOR').required().messages({
+    'any.only': 'Role must be one of: ADMIN, DOCTOR',
     'any.required': 'Role is required',
   }),
   specialization: Joi.string().max(100).allow('').optional(),
@@ -53,13 +53,13 @@ export const updateUserSchema = Joi.object({
       'string.pattern.base':
         'Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number',
     }),
-  role: Joi.string().valid('admin', 'doctor', 'assistant').optional(),
+  role: Joi.string().valid('ADMIN', 'DOCTOR').optional(),
   specialization: Joi.string().max(100).allow('').optional(),
   phone: Joi.string()
     .pattern(/^\+?[\d\s\-\(\)]+$/)
     .allow('')
     .optional(),
-  isActive: Joi.boolean().optional(),
+  status: Joi.string().valid('ACTIVE', 'SUSPENDED').optional(),
 }).min(1); // Хотя бы одно поле обязательно
 
 /**

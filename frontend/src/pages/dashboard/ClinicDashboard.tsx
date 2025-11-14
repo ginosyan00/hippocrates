@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DashboardLayout } from '../../components/dashboard/DashboardLayout';
+import { NewDashboardLayout } from '../../components/dashboard/NewDashboardLayout';
 import { Card, Button } from '../../components/common';
 import { AddDoctorModal } from '../../components/dashboard/AddDoctorModal';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -47,7 +47,7 @@ export const ClinicDashboard: React.FC = () => {
   };
 
   return (
-    <DashboardLayout>
+    <NewDashboardLayout>
       <div className="space-y-6">
         {/* Welcome Header */}
         <div className="bg-gradient-to-r from-green-500 to-blue-500 rounded-xl p-6 text-white">
@@ -271,6 +271,6 @@ export const ClinicDashboard: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         onSuccess={handleDoctorCreated}
       />
-    </DashboardLayout>
+    </NewDashboardLayout>
   );
 };

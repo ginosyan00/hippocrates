@@ -114,8 +114,8 @@ export async function findClinicDoctors(slug) {
   const doctors = await prisma.user.findMany({
     where: {
       clinicId: clinic.id,
-      role: 'doctor',
-      isActive: true,
+      role: 'DOCTOR',
+      status: 'ACTIVE',
     },
     select: {
       id: true,
@@ -162,8 +162,8 @@ export async function createPublicAppointment(
     where: {
       id: doctorId,
       clinicId: clinic.id,
-      role: 'doctor',
-      isActive: true,
+      role: 'DOCTOR',
+      status: 'ACTIVE',
     },
   });
 

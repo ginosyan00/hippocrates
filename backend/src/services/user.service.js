@@ -35,10 +35,10 @@ export async function findAll(clinicId, options = {}) {
         name: true,
         email: true,
         role: true,
+        status: true,
         specialization: true,
         phone: true,
         avatar: true,
-        isActive: true,
         createdAt: true,
         updatedAt: true,
         // НЕ возвращаем passwordHash!
@@ -79,10 +79,10 @@ export async function findById(clinicId, userId) {
       name: true,
       email: true,
       role: true,
+      status: true,
       specialization: true,
       phone: true,
       avatar: true,
-      isActive: true,
       createdAt: true,
       updatedAt: true,
       // НЕ возвращаем passwordHash!
@@ -132,9 +132,9 @@ export async function create(clinicId, data) {
       name: true,
       email: true,
       role: true,
+      status: true,
       specialization: true,
       phone: true,
-      isActive: true,
       createdAt: true,
       updatedAt: true,
       // НЕ возвращаем passwordHash!
@@ -182,9 +182,9 @@ export async function update(clinicId, userId, data) {
       name: true,
       email: true,
       role: true,
+      status: true,
       specialization: true,
       phone: true,
-      isActive: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -206,14 +206,14 @@ export async function remove(clinicId, userId) {
   const admins = await prisma.user.count({
     where: {
       clinicId,
-      role: 'admin',
-      isActive: true,
+      role: 'ADMIN',
+      status: 'ACTIVE',
     },
   });
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  if (user.role === 'admin' && admins <= 1) {
+  if (user.role === 'ADMIN' && admins <= 1) {
     throw new Error('Cannot delete the last admin of the clinic');
   }
 
@@ -232,8 +232,8 @@ export async function findDoctors(clinicId) {
   return await prisma.user.findMany({
     where: {
       clinicId,
-      role: 'doctor',
-      isActive: true,
+      role: 'DOCTOR',
+      status: 'ACTIVE',
     },
     select: {
       id: true,

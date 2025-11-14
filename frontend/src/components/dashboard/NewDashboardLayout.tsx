@@ -1,14 +1,13 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 
 /**
- * Old Dashboard Layout - For Legacy Routes
- * Layout для старых nested роутов (/dashboard/*)
- * Использует Outlet для вложенных маршрутов
+ * New Dashboard Layout - For Role-based Dashboards
+ * Layout для новых role-based дашбордов (Patient, Doctor, Clinic, Partner, Admin)
+ * Использует children вместо Outlet
  */
-export const DashboardLayout: React.FC = () => {
+export const NewDashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="flex h-screen bg-bg-primary">
       {/* Sidebar */}
@@ -19,12 +18,11 @@ export const DashboardLayout: React.FC = () => {
         <Header />
         <main className="flex-1 overflow-y-auto px-8 py-6">
           <div className="animate-fade-in">
-            <Outlet />
+            {children}
           </div>
         </main>
       </div>
     </div>
   );
 };
-
 

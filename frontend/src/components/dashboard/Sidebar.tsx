@@ -54,7 +54,7 @@ export const Sidebar: React.FC = () => {
             <span className="text-sm">Appointment</span>
           </NavLink>
 
-          {user?.role === 'admin' && (
+          {user?.role === 'ADMIN' && (
             <NavLink to="/dashboard/staff" className={navLinkClass}>
               <img src={doctorIcon} alt="Staff" className="w-6 h-6" />
               <span className="text-sm">Doctor</span>

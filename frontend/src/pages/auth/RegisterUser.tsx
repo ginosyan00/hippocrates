@@ -119,8 +119,17 @@ export const RegisterUserPage: React.FC = () => {
           navigate('/dashboard/patient');
         } else if (response.user.role === 'CLINIC') {
           navigate('/dashboard/clinic');
+        } else if (response.user.role === 'DOCTOR') {
+          navigate('/dashboard/doctor');
+        } else if (response.user.role === 'PARTNER') {
+          navigate('/dashboard/partner');
         } else if (response.user.role === 'ADMIN') {
-          navigate('/dashboard/admin');
+          // Если ADMIN с clinicId - это владелец клиники
+          if (response.user.clinicId) {
+            navigate('/dashboard/clinic');
+          } else {
+            navigate('/dashboard/admin');
+          }
         } else {
           navigate('/dashboard');
         }

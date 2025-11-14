@@ -64,7 +64,13 @@ export const RegisterPage: React.FC = () => {
       });
 
       setAuth(response.user, response.token);
-      navigate('/dashboard');
+      
+      // Владелец клиники (ADMIN с clinicId) -> ClinicDashboard
+      if (response.user.clinicId) {
+        navigate('/dashboard/clinic');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'Ошибка регистрации');
     } finally {

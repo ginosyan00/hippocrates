@@ -11,7 +11,7 @@ export const userService = {
    * Получить всех пользователей
    */
   async getAll(params?: { role?: string; page?: number; limit?: number }): Promise<PaginatedResponse<User>> {
-    const { data } = await api.get<ApiResponse<PaginatedResponse<User>>>('/api/v1/users', {
+    const { data } = await api.get<ApiResponse<PaginatedResponse<User>>>('/users', {
       params,
     });
     return data.data;
@@ -21,7 +21,7 @@ export const userService = {
    * Получить только врачей
    */
   async getDoctors(): Promise<User[]> {
-    const { data } = await api.get<ApiResponse<User[]>>('/api/v1/users/doctors');
+    const { data } = await api.get<ApiResponse<User[]>>('/users/doctors');
     return data.data;
   },
 
@@ -29,7 +29,7 @@ export const userService = {
    * Получить пользователя по ID
    */
   async getById(id: string): Promise<User> {
-    const { data } = await api.get<ApiResponse<User>>(`/api/v1/users/${id}`);
+    const { data } = await api.get<ApiResponse<User>>(`/users/${id}`);
     return data.data;
   },
 
@@ -44,7 +44,7 @@ export const userService = {
     specialization?: string;
     phone?: string;
   }): Promise<User> {
-    const { data } = await api.post<ApiResponse<User>>('/api/v1/users', user);
+    const { data } = await api.post<ApiResponse<User>>('/users', user);
     return data.data;
   },
 
@@ -52,7 +52,7 @@ export const userService = {
    * Обновить пользователя
    */
   async update(id: string, user: Partial<User>): Promise<User> {
-    const { data } = await api.put<ApiResponse<User>>(`/api/v1/users/${id}`, user);
+    const { data } = await api.put<ApiResponse<User>>(`/users/${id}`, user);
     return data.data;
   },
 
@@ -60,7 +60,7 @@ export const userService = {
    * Удалить пользователя
    */
   async delete(id: string): Promise<void> {
-    await api.delete(`/api/v1/users/${id}`);
+    await api.delete(`/users/${id}`);
   },
 
   /**
@@ -68,7 +68,7 @@ export const userService = {
    */
   async getPendingUsers(): Promise<User[]> {
     console.log('🔵 [USER SERVICE] Запрос pending пользователей');
-    const { data } = await api.get<ApiResponse<User[]>>('/api/v1/users/pending');
+    const { data } = await api.get<ApiResponse<User[]>>('/users/pending');
     console.log('✅ [USER SERVICE] Получено pending:', data.data.length);
     return data.data;
   },
@@ -78,7 +78,7 @@ export const userService = {
    */
   async approveUser(id: string): Promise<User> {
     console.log('🔵 [USER SERVICE] Одобрение пользователя:', id);
-    const { data } = await api.post<ApiResponse<User>>(`/api/v1/users/${id}/approve`);
+    const { data } = await api.post<ApiResponse<User>>(`/users/${id}/approve`);
     console.log('✅ [USER SERVICE] Пользователь одобрен');
     return data.data;
   },
@@ -88,7 +88,7 @@ export const userService = {
    */
   async rejectUser(id: string, reason?: string): Promise<User> {
     console.log('🔵 [USER SERVICE] Отклонение пользователя:', id);
-    const { data } = await api.post<ApiResponse<User>>(`/api/v1/users/${id}/reject`, { reason });
+    const { data } = await api.post<ApiResponse<User>>(`/users/${id}/reject`, { reason });
     console.log('✅ [USER SERVICE] Пользователь отклонен');
     return data.data;
   },
@@ -108,7 +108,7 @@ export const userService = {
     gender?: 'male' | 'female' | 'other';
   }): Promise<User> {
     console.log('🔵 [USER SERVICE] Создание врача для клиники');
-    const { data } = await api.post<ApiResponse<User>>('/api/v1/users/doctors', doctor);
+    const { data } = await api.post<ApiResponse<User>>('/users/doctors', doctor);
     console.log('✅ [USER SERVICE] Врач успешно создан:', data.data.id);
     return data.data;
   },

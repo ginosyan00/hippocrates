@@ -132,10 +132,7 @@ export enum UserRole {
   DOCTOR = 'DOCTOR',
   PARTNER = 'PARTNER',
   ADMIN = 'ADMIN',
-  // Старые роли для обратной совместимости
-  Admin = 'admin',
-  Doctor = 'doctor',
-  Assistant = 'assistant',
+  CLINIC = 'CLINIC', // Для обратной совместимости (если используется в старых данных)
 }
 
 export enum UserStatus {

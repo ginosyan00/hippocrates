@@ -57,7 +57,7 @@ export async function registerClinic(clinicData, adminData) {
         name: adminData.name,
         email: adminData.email,
         passwordHash,
-        role: 'admin',
+        role: 'ADMIN',
       },
     });
 

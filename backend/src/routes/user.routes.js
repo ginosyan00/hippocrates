@@ -25,11 +25,11 @@ router.get('/doctors', userController.getDoctors);
 /**
  * POST /api/v1/users/doctors
  * Создать врача в клинике
- * Доступ: только CLINIC (владелец клиники)
+ * Доступ: только ADMIN (владелец клиники)
  */
 router.post(
   '/doctors', 
-  authorize('CLINIC'), 
+  authorize('ADMIN'), 
   validate(createDoctorByClinicSchema), 
   userController.createDoctor
 );
@@ -60,35 +60,35 @@ router.post('/:id/reject', authorize('ADMIN'), userController.rejectUser);
  * Получить список пользователей
  * Доступ: только admin
  */
-router.get('/', authorize('admin', 'ADMIN'), userController.getAll);
+router.get('/', authorize('ADMIN'), userController.getAll);
 
 /**
  * GET /api/v1/users/:id
  * Получить пользователя по ID
  * Доступ: только admin
  */
-router.get('/:id', authorize('admin'), userController.getById);
+router.get('/:id', authorize('ADMIN'), userController.getById);
 
 /**
  * POST /api/v1/users
  * Создать нового пользователя
  * Доступ: только admin
  */
-router.post('/', authorize('admin'), validate(createUserSchema), userController.create);
+router.post('/', authorize('ADMIN'), validate(createUserSchema), userController.create);
 
 /**
  * PUT /api/v1/users/:id
  * Обновить пользователя
  * Доступ: только admin
  */
-router.put('/:id', authorize('admin'), validate(updateUserSchema), userController.update);
+router.put('/:id', authorize('ADMIN'), validate(updateUserSchema), userController.update);
 
 /**
  * DELETE /api/v1/users/:id
  * Удалить пользователя
  * Доступ: только admin
  */
-router.delete('/:id', authorize('admin'), userController.remove);
+router.delete('/:id', authorize('ADMIN'), userController.remove);
 
 export default router;
 

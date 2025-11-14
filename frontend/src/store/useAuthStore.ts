@@ -17,42 +17,68 @@ interface AuthState {
   updateUser: (user: User) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set) => {
   // Initial state
-  user: (() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  })(),
-  token: localStorage.getItem('token'),
-  isAuthenticated: !!localStorage.getItem('token'),
+  const savedUser = (() => {
+    const savedUserStr = localStorage.getItem('user');
+    if (savedUserStr) {
+      try {
+        return JSON.parse(savedUserStr);
+      } catch (err) {
+        console.error('🔴 [AUTH STORE] Ошибка парсинга user из localStorage:', err);
+        return null;
+      }
+    }
+    return null;
+  })();
+  
+  const savedToken = localStorage.getItem('token');
+  const isAuth = !!savedToken;
 
-  // Set auth (после login/register)
-  setAuth: (user, token) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('token', token);
-    set({
-      user,
-      token,
-      isAuthenticated: true,
-    });
-  },
+  console.log('🔵 [AUTH STORE] Инициализация:', {
+    hasUser: !!savedUser,
+    userEmail: savedUser?.email,
+    role: savedUser?.role,
+    hasToken: !!savedToken,
+    isAuthenticated: isAuth,
+  });
 
-  // Logout
-  logout: () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    set({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-    });
-  },
+  return {
+    user: savedUser,
+    token: savedToken,
+    isAuthenticated: isAuth,
 
-  // Update user data
-  updateUser: (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    set({ user });
-  },
-}));
+    // Set auth (после login/register)
+    setAuth: (user, token) => {
+      console.log('✅ [AUTH STORE] setAuth:', { email: user.email, role: user.role, status: user.status });
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', token);
+      set({
+        user,
+        token,
+        isAuthenticated: true,
+      });
+    },
+
+    // Logout
+    logout: () => {
+      console.log('🔴 [AUTH STORE] logout вызван');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      set({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+      });
+    },
+
+    // Update user data
+    updateUser: (user) => {
+      console.log('🔵 [AUTH STORE] updateUser:', { email: user.email, role: user.role });
+      localStorage.setItem('user', JSON.stringify(user));
+      set({ user });
+    },
+  };
+});
 
 

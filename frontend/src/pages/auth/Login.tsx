@@ -51,8 +51,15 @@ export const LoginPage: React.FC = () => {
         console.log('🏢 [LOGIN] Redirect -> /dashboard/partner');
         navigate('/dashboard/partner');
       } else if (response.user.role === 'ADMIN') {
-        console.log('🔑 [LOGIN] Redirect -> /dashboard/admin');
-        navigate('/dashboard/admin');
+        // Если ADMIN с clinicId - это владелец клиники -> ClinicDashboard
+        // Если ADMIN без clinicId - это супер-админ -> AdminDashboard
+        if (response.user.clinicId) {
+          console.log('🏥 [LOGIN] ADMIN с clinicId -> /dashboard/clinic');
+          navigate('/dashboard/clinic');
+        } else {
+          console.log('🔑 [LOGIN] Супер-ADMIN -> /dashboard/admin');
+          navigate('/dashboard/admin');
+        }
       } else {
         // Fallback для старых пользователей
         console.log('📊 [LOGIN] Redirect -> /dashboard (fallback)');

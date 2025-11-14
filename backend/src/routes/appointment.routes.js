@@ -33,11 +33,11 @@ router.get('/:id', appointmentController.getById);
 /**
  * POST /api/v1/appointments
  * Создать новый приём
- * Доступ: admin, assistant
+ * Доступ: ADMIN, DOCTOR
  */
 router.post(
   '/',
-  authorize('admin', 'assistant'),
+  authorize('ADMIN', 'DOCTOR'),
   validate(createAppointmentSchema),
   appointmentController.create
 );
@@ -45,11 +45,11 @@ router.post(
 /**
  * PUT /api/v1/appointments/:id
  * Обновить приём
- * Доступ: admin, assistant
+ * Доступ: ADMIN, DOCTOR
  */
 router.put(
   '/:id',
-  authorize('admin', 'assistant'),
+  authorize('ADMIN', 'DOCTOR'),
   validate(updateAppointmentSchema),
   appointmentController.update
 );
@@ -57,11 +57,11 @@ router.put(
 /**
  * PATCH /api/v1/appointments/:id/status
  * Изменить статус приёма
- * Доступ: admin, assistant, doctor (ограничения внутри service)
+ * Доступ: ADMIN, DOCTOR (ограничения внутри service)
  */
 router.patch(
   '/:id/status',
-  authorize('admin', 'assistant', 'doctor'),
+  authorize('ADMIN', 'DOCTOR'),
   validate(updateStatusSchema),
   appointmentController.updateStatus
 );
@@ -69,9 +69,9 @@ router.patch(
 /**
  * DELETE /api/v1/appointments/:id
  * Удалить приём
- * Доступ: только admin
+ * Доступ: только ADMIN
  */
-router.delete('/:id', authorize('admin'), appointmentController.remove);
+router.delete('/:id', authorize('ADMIN'), appointmentController.remove);
 
 export default router;
 

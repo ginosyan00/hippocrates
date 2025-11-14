@@ -1,5 +1,5 @@
 import React from 'react';
-import { DashboardLayout } from '../../components/dashboard/DashboardLayout';
+import { NewDashboardLayout } from '../../components/dashboard/NewDashboardLayout';
 import { Card, Button } from '../../components/common';
 import { useAuthStore } from '../../store/useAuthStore';
 
@@ -53,7 +53,7 @@ export const PartnerDashboard: React.FC = () => {
   };
 
   return (
-    <DashboardLayout>
+    <NewDashboardLayout>
       <div className="space-y-6">
         {/* Welcome Header */}
         <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-6 text-white">
@@ -290,6 +290,6 @@ export const PartnerDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </NewDashboardLayout>
   );
 };
