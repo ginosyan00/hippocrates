@@ -41,6 +41,9 @@ export const LoginPage: React.FC = () => {
       } else if (response.user.role === 'PATIENT') {
         console.log('👤 [LOGIN] Redirect -> /dashboard/patient');
         navigate('/dashboard/patient');
+      } else if (response.user.role === 'CLINIC') {
+        console.log('🏥 [LOGIN] Redirect -> /dashboard/clinic');
+        navigate('/dashboard/clinic');
       } else if (response.user.role === 'DOCTOR') {
         console.log('⚕️ [LOGIN] Redirect -> /dashboard/doctor');
         navigate('/dashboard/doctor');

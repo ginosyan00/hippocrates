@@ -15,7 +15,7 @@ export const PendingApprovalPage: React.FC = () => {
   const logout = useAuthStore(state => state.logout);
 
   const getRoleTitle = () => {
-    if (user?.role === 'DOCTOR') return 'врача';
+    if (user?.role === 'CLINIC') return 'клиники';
     if (user?.role === 'PARTNER') return 'партнера';
     return 'пользователя';
   };

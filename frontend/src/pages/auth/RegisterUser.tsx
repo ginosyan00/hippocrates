@@ -16,7 +16,6 @@ export const RegisterUserPage: React.FC = () => {
   const navigate = useNavigate();
   const setAuth = useAuthStore(state => state.setAuth);
 
-  // По умолчанию: PATIENT роль выбрана
   const [selectedRole, setSelectedRole] = useState<UserRole>('PATIENT');
 
   // Common fields
@@ -27,16 +26,19 @@ export const RegisterUserPage: React.FC = () => {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [gender, setGender] = useState<'male' | 'female' | 'other'>('male');
 
-  // Doctor fields
-  const [specialization, setSpecialization] = useState('');
-  const [licenseNumber, setLicenseNumber] = useState('');
-  const [experience, setExperience] = useState('');
+  // Clinic fields
+  const [clinicName, setClinicName] = useState('');
+  const [clinicEmail, setClinicEmail] = useState('');
+  const [clinicPhone, setClinicPhone] = useState('');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+  const [about, setAbout] = useState('');
 
   // Partner fields
   const [organizationName, setOrganizationName] = useState('');
   const [organizationType, setOrganizationType] = useState<'pharmacy' | 'laboratory' | 'insurance'>('pharmacy');
   const [inn, setInn] = useState('');
-  const [address, setAddress] = useState('');
+  const [organizationAddress, setOrganizationAddress] = useState('');
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -47,16 +49,19 @@ export const RegisterUserPage: React.FC = () => {
     setError('');
     
     // Сбрасываем role-specific поля при смене роли
-    if (role !== 'DOCTOR') {
-      setSpecialization('');
-      setLicenseNumber('');
-      setExperience('');
+    if (role !== 'CLINIC') {
+      setClinicName('');
+      setClinicEmail('');
+      setClinicPhone('');
+      setCity('');
+      setAddress('');
+      setAbout('');
     }
     if (role !== 'PARTNER') {
       setOrganizationName('');
       setOrganizationType('pharmacy');
       setInn('');
-      setAddress('');
+      setOrganizationAddress('');
     }
   };
 
@@ -80,19 +85,24 @@ export const RegisterUserPage: React.FC = () => {
       };
 
       // Добавляем role-specific поля
-      if (selectedRole === 'DOCTOR') {
-        userData.specialization = specialization;
-        userData.licenseNumber = licenseNumber;
-        userData.experience = parseInt(experience);
+      if (selectedRole === 'CLINIC') {
+        userData.clinicName = clinicName;
+        userData.clinicEmail = clinicEmail;
+        userData.clinicPhone = clinicPhone;
+        userData.city = city;
+        userData.address = address || undefined;
+        userData.about = about || undefined;
       }
 
       if (selectedRole === 'PARTNER') {
         userData.organizationName = organizationName;
         userData.organizationType = organizationType;
         userData.inn = inn;
-        userData.address = address;
+        userData.organizationAddress = organizationAddress;
       }
 
+      console.log('🔵 [REGISTER] Отправляемые данные:', JSON.stringify(userData, null, 2));
+      
       const response = await authService.registerUser(userData);
       
       console.log('✅ [REGISTER] Регистрация успешна:', response.user);
@@ -101,15 +111,31 @@ export const RegisterUserPage: React.FC = () => {
 
       // Redirect based on role and status
       if (response.user.status === 'PENDING') {
-        // Для Doctor и Partner - показываем страницу ожидания
+        // Для Partner - показываем страницу ожидания
         navigate('/pending-approval');
       } else {
-        // Для Patient - сразу на dashboard
-        navigate('/dashboard');
+        // Redirect по роли
+        if (response.user.role === 'PATIENT') {
+          navigate('/dashboard/patient');
+        } else if (response.user.role === 'CLINIC') {
+          navigate('/dashboard/clinic');
+        } else if (response.user.role === 'ADMIN') {
+          navigate('/dashboard/admin');
+        } else {
+          navigate('/dashboard');
+        }
       }
     } catch (err: any) {
-      console.log('🔴 [REGISTER] Ошибка:', err.message);
-      setError(err.message || 'Ошибка регистрации');
+      console.log('🔴 [REGISTER] Ошибка:', err);
+      
+      // Если есть validation details - показываем их
+      if (err.details && err.details.length > 0) {
+        console.log('🔴 [REGISTER] Validation errors:', err.details);
+        const validationErrors = err.details.map((d: any) => `${d.field}: ${d.message}`).join(', ');
+        setError(validationErrors);
+      } else {
+        setError(err.message || 'Ошибка регистрации');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -153,39 +179,27 @@ export const RegisterUserPage: React.FC = () => {
                       <div className="text-[10px] text-text-10">Обычный пользователь</div>
                     </div>
                   </div>
-                  {selectedRole === 'PATIENT' && (
-                    <div className="mt-2 pt-2 border-t border-stroke">
-                      <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-[9px] font-medium rounded">
-                        ✓ По умолчанию
-                      </span>
-                    </div>
-                  )}
                 </button>
 
-                {/* DOCTOR Tab */}
+                {/* CLINIC Tab */}
                 <button
                   type="button"
-                  onClick={() => handleRoleSelect('DOCTOR')}
+                  onClick={() => handleRoleSelect('CLINIC')}
                   className={`
                     w-full p-3 rounded-lg border-2 text-left transition-all
                     ${
-                      selectedRole === 'DOCTOR'
+                      selectedRole === 'CLINIC'
                         ? 'border-main-100 bg-main-100 bg-opacity-5 shadow-sm'
                         : 'border-stroke hover:border-main-100 hover:border-opacity-50'
                     }
                   `}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">⚕️</span>
+                    <span className="text-xl">🏥</span>
                     <div>
-                      <div className="font-medium text-text-50 text-sm">Врач</div>
-                      <div className="text-[10px] text-text-10">Специалист</div>
+                      <div className="font-medium text-text-50 text-sm">Клиника</div>
+                      <div className="text-[10px] text-text-10">Медицинский центр</div>
                     </div>
-                  </div>
-                  <div className="mt-2 pt-2 border-t border-stroke">
-                    <span className="inline-block px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[9px] font-medium rounded">
-                      ⏳ Требует одобрения
-                    </span>
                   </div>
                 </button>
 
@@ -208,11 +222,6 @@ export const RegisterUserPage: React.FC = () => {
                       <div className="font-medium text-text-50 text-sm">Партнер</div>
                       <div className="text-[10px] text-text-10">Аптеки, лаборатории</div>
                     </div>
-                  </div>
-                  <div className="mt-2 pt-2 border-t border-stroke">
-                    <span className="inline-block px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[9px] font-medium rounded">
-                      ⏳ Требует одобрения
-                    </span>
                   </div>
                 </button>
               </div>
@@ -286,41 +295,70 @@ export const RegisterUserPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Doctor-specific Fields */}
-              {selectedRole === 'DOCTOR' && (
+              {/* Clinic-specific Fields */}
+              {selectedRole === 'CLINIC' && (
                 <div>
-                  <h3 className="text-base font-medium text-text-50 mb-4">Профессиональная информация</h3>
+                  <h3 className="text-base font-medium text-text-50 mb-4">Информация о клинике</h3>
                   <div className="space-y-4">
                     <Input
-                      label="Специализация"
-                      placeholder="Стоматолог-терапевт"
-                      value={specialization}
-                      onChange={e => setSpecialization(e.target.value)}
+                      label="Название клиники *"
+                      placeholder="Медицинский центр 'Здоровье'"
+                      value={clinicName}
+                      onChange={e => setClinicName(e.target.value)}
                       required
                     />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input
-                        label="Номер лицензии"
-                        placeholder="MD-123456"
-                        value={licenseNumber}
-                        onChange={e => setLicenseNumber(e.target.value)}
+                        label="Email клиники *"
+                        type="email"
+                        placeholder="clinic@example.com"
+                        value={clinicEmail}
+                        onChange={e => setClinicEmail(e.target.value)}
                         required
                       />
 
                       <Input
-                        label="Опыт работы (лет)"
-                        type="number"
-                        placeholder="5"
-                        value={experience}
-                        onChange={e => setExperience(e.target.value)}
+                        label="Телефон клиники *"
+                        placeholder="+374 10 123456"
+                        value={clinicPhone}
+                        onChange={e => setClinicPhone(e.target.value)}
                         required
                       />
                     </div>
 
-                    <Card className="bg-yellow-50 border-yellow-200" padding="sm">
-                      <p className="text-yellow-700 text-xs">
-                        ⏳ Ваш аккаунт будет активирован после проверки администратором
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Input
+                        label="Город *"
+                        placeholder="Ереван"
+                        value={city}
+                        onChange={e => setCity(e.target.value)}
+                        required
+                      />
+
+                      <Input
+                        label="Адрес"
+                        placeholder="ул. Абовяна 10"
+                        value={address}
+                        onChange={e => setAddress(e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-text-50 mb-2">О клинике</label>
+                      <textarea
+                        value={about}
+                        onChange={e => setAbout(e.target.value)}
+                        placeholder="Краткое описание клиники, услуги, специализация..."
+                        className="w-full px-4 py-3 border border-stroke rounded-lg focus:outline-none focus:ring-2 focus:ring-main-100 text-sm min-h-[100px]"
+                        maxLength={1000}
+                      />
+                      <p className="text-xs text-text-10 mt-1">{about.length}/1000</p>
+                    </div>
+
+                    <Card className="bg-blue-50 border-blue-200" padding="sm">
+                      <p className="text-blue-800 text-xs">
+                        <strong>ℹ️ Информация:</strong> После регистрации вы сможете добавлять врачей в свою клинику.
                       </p>
                     </Card>
                   </div>
@@ -360,8 +398,8 @@ export const RegisterUserPage: React.FC = () => {
                     <Input
                       label="Адрес"
                       placeholder="ул. Абовяна 10, Ереван"
-                      value={address}
-                      onChange={e => setAddress(e.target.value)}
+                      value={organizationAddress}
+                      onChange={e => setOrganizationAddress(e.target.value)}
                       required
                     />
 

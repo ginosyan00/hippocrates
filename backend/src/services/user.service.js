@@ -370,3 +370,74 @@ export async function rejectUser(userId, reason = null) {
   return updatedUser;
 }
 
+/**
+ * Создать врача в клинике (Clinic создает врача для своей клиники)
+ * @param {string} clinicId - ID клиники
+ * @param {object} data - Данные врача
+ * @returns {Promise<object>} Созданный врач
+ */
+export async function createDoctorByClinic(clinicId, data) {
+  console.log('🔵 [USER SERVICE] Создание врача для клиники:', clinicId);
+
+  // Проверка: клиника существует
+  const clinic = await prisma.clinic.findUnique({
+    where: { id: clinicId },
+  });
+
+  if (!clinic) {
+    console.log('🔴 [USER SERVICE] Клиника не найдена');
+    throw new Error('Clinic not found');
+  }
+
+  // Проверка: уникальность email (глобально)
+  const existing = await prisma.user.findUnique({
+    where: { email: data.email },
+  });
+
+  if (existing) {
+    console.log('🔴 [USER SERVICE] Email уже используется:', data.email);
+    throw new Error('User with this email already exists');
+  }
+
+  // Хешируем пароль
+  const passwordHash = await hashPassword(data.password);
+
+  // Создаем врача
+  const doctor = await prisma.user.create({
+    data: {
+      clinicId,
+      name: data.name,
+      email: data.email,
+      passwordHash,
+      role: 'DOCTOR', // ОБЯЗАТЕЛЬНО роль врача
+      status: 'ACTIVE', // Сразу активен (создан клиникой)
+      specialization: data.specialization,
+      licenseNumber: data.licenseNumber,
+      experience: data.experience,
+      phone: data.phone || null,
+      dateOfBirth: data.dateOfBirth || null,
+      gender: data.gender || null,
+    },
+    select: {
+      id: true,
+      clinicId: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true,
+      specialization: true,
+      licenseNumber: true,
+      experience: true,
+      phone: true,
+      dateOfBirth: true,
+      gender: true,
+      createdAt: true,
+      updatedAt: true,
+      // НЕ возвращаем passwordHash!
+    },
+  });
+
+  console.log('✅ [USER SERVICE] Врач успешно создан:', doctor.id);
+  return doctor;
+}
+

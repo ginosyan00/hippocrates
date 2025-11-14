@@ -77,16 +77,16 @@ export const loginSchema = Joi.object({
 });
 
 /**
- * Регистрация пользователя (Patient, Doctor, Partner)
+ * Регистрация пользователя (Patient, Clinic, Partner)
  * Динамическая валидация в зависимости от роли
  */
 export const registerUserSchema = Joi.object({
   // Общие поля для всех ролей
   role: Joi.string()
-    .valid('PATIENT', 'DOCTOR', 'PARTNER')
+    .valid('PATIENT', 'CLINIC', 'PARTNER')
     .required()
     .messages({
-      'any.only': 'Role must be one of: PATIENT, DOCTOR, PARTNER',
+      'any.only': 'Role must be one of: PATIENT, CLINIC, PARTNER',
       'any.required': 'Role is required',
     }),
   name: Joi.string().min(2).max(100).required().messages({
@@ -121,30 +121,53 @@ export const registerUserSchema = Joi.object({
     'any.only': 'Gender must be one of: male, female, other',
   }),
 
-  // Doctor-specific поля (required только для DOCTOR)
-  specialization: Joi.string().when('role', {
-    is: 'DOCTOR',
-    then: Joi.required().messages({
-      'any.required': 'Specialization is required for doctors',
+  // Clinic-specific поля (required только для CLINIC)
+  clinicName: Joi.string().when('role', {
+    is: 'CLINIC',
+    then: Joi.string().min(2).max(100).required().messages({
+      'string.min': 'Clinic name must be at least 2 characters',
+      'string.max': 'Clinic name must be at most 100 characters',
+      'any.required': 'Clinic name is required',
     }),
     otherwise: Joi.optional(),
   }),
-  licenseNumber: Joi.string().when('role', {
-    is: 'DOCTOR',
-    then: Joi.required().messages({
-      'any.required': 'License number is required for doctors',
+  clinicEmail: Joi.string().when('role', {
+    is: 'CLINIC',
+    then: Joi.string().email().required().messages({
+      'string.email': 'Must be a valid email',
+      'any.required': 'Clinic email is required',
     }),
     otherwise: Joi.optional(),
   }),
-  experience: Joi.number().integer().min(0).when('role', {
-    is: 'DOCTOR',
-    then: Joi.required().messages({
-      'any.required': 'Experience is required for doctors',
-      'number.min': 'Experience must be at least 0 years',
+  clinicPhone: Joi.string().when('role', {
+    is: 'CLINIC',
+    then: Joi.string().pattern(/^\+?[\d\s\-\(\)]+$/).required().messages({
+      'string.pattern.base': 'Must be a valid phone number',
+      'any.required': 'Clinic phone is required',
     }),
     otherwise: Joi.optional(),
   }),
-  clinicId: Joi.string().optional(),
+  city: Joi.string().when('role', {
+    is: 'CLINIC',
+    then: Joi.string().required().messages({
+      'any.required': 'City is required',
+    }),
+    otherwise: Joi.optional(),
+  }),
+  address: Joi.string().when('role', {
+    is: 'CLINIC',
+    then: Joi.optional(),
+    otherwise: Joi.when('role', {
+      is: 'PARTNER',
+      then: Joi.required().messages({
+        'any.required': 'Address is required for partners',
+      }),
+      otherwise: Joi.optional(),
+    }),
+  }),
+  about: Joi.string().max(1000).optional().messages({
+    'string.max': 'About must be at most 1000 characters',
+  }),
 
   // Partner-specific поля (required только для PARTNER)
   organizationName: Joi.string().when('role', {
@@ -171,7 +194,7 @@ export const registerUserSchema = Joi.object({
     }),
     otherwise: Joi.optional(),
   }),
-  address: Joi.string().when('role', {
+  organizationAddress: Joi.string().when('role', {
     is: 'PARTNER',
     then: Joi.required().messages({
       'any.required': 'Address is required for partners',

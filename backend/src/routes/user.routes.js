@@ -3,7 +3,11 @@ import * as userController from '../controllers/user.controller.js';
 import { authenticate, authorize } from '../middlewares/auth.middleware.js';
 import { tenantMiddleware } from '../middlewares/tenant.middleware.js';
 import { validate } from '../middlewares/validation.middleware.js';
-import { createUserSchema, updateUserSchema } from '../validators/user.validator.js';
+import { 
+  createUserSchema, 
+  updateUserSchema, 
+  createDoctorByClinicSchema 
+} from '../validators/user.validator.js';
 
 const router = express.Router();
 
@@ -17,6 +21,18 @@ router.use(tenantMiddleware);
  * Доступ: все авторизованные
  */
 router.get('/doctors', userController.getDoctors);
+
+/**
+ * POST /api/v1/users/doctors
+ * Создать врача в клинике
+ * Доступ: только CLINIC (владелец клиники)
+ */
+router.post(
+  '/doctors', 
+  authorize('CLINIC'), 
+  validate(createDoctorByClinicSchema), 
+  userController.createDoctor
+);
 
 /**
  * GET /api/v1/users/pending

@@ -141,12 +141,56 @@ async function main() {
 
   console.log('✅ Appointments created:', appointment1.id, appointment2.id);
 
+  // 6. Создаем тестовую CLINIC (владелец клиники)
+  const clinic2 = await prisma.clinic.create({
+    data: {
+      name: 'Медицинский центр Здоровье',
+      slug: 'zdorovie-clinic',
+      email: 'info@zdorovie.am',
+      phone: '+374 10 123456',
+      city: 'Yerevan',
+      address: 'пр. Маштоца 25',
+      about: 'Современный медицинский центр с полным спектром услуг',
+    },
+  });
+
+  const clinicOwnerPasswordHash = await bcrypt.hash('Clinic123', 12);
+  const clinicOwner = await prisma.user.create({
+    data: {
+      clinicId: clinic2.id,
+      name: 'Gurgen Ginosyan',
+      email: 'clinic@test.am',
+      passwordHash: clinicOwnerPasswordHash,
+      role: 'CLINIC',
+      status: 'ACTIVE',
+      phone: '+374 41 881822',
+    },
+  });
+
+  console.log('✅ Test CLINIC user created:', clinicOwner.email);
+
+  // 7. Создаем тестового ADMIN для системы
+  const systemAdminPasswordHash = await bcrypt.hash('Admin123', 12);
+  const systemAdmin = await prisma.user.create({
+    data: {
+      name: 'System Admin',
+      email: 'admin@system.am',
+      passwordHash: systemAdminPasswordHash,
+      role: 'ADMIN',
+      status: 'ACTIVE',
+    },
+  });
+
+  console.log('✅ System ADMIN created:', systemAdmin.email);
+
   console.log('');
   console.log('🎉 Seed completed successfully!');
   console.log('');
   console.log('📋 Test credentials:');
-  console.log('   Admin:  admin@dentalux.am / Admin123!');
-  console.log('   Doctor: karen@dentalux.am / Doctor123!');
+  console.log('   🏥 CLINIC:  clinic@test.am / Clinic123');
+  console.log('   🔑 ADMIN:   admin@system.am / Admin123');
+  console.log('   👨‍⚕️ Admin (old): admin@dentalux.am / Admin123!');
+  console.log('   ⚕️ Doctor: karen@dentalux.am / Doctor123!');
   console.log('');
 }
 

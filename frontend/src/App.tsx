@@ -11,6 +11,7 @@ import { StaffPage } from './pages/dashboard/Staff';
 import { PharmacyPage } from './pages/dashboard/Pharmacy';
 import { PatientDashboard } from './pages/dashboard/PatientDashboard';
 import { DoctorDashboard } from './pages/dashboard/DoctorDashboard';
+import { ClinicDashboard } from './pages/dashboard/ClinicDashboard';
 import { PartnerDashboard } from './pages/dashboard/PartnerDashboard';
 import { AdminDashboard } from './pages/dashboard/AdminDashboard';
 import { HomePage } from './pages/public/Home';
@@ -44,6 +45,14 @@ function App() {
           element={
             <ProtectedRoute>
               <PatientDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/clinic"
+          element={
+            <ProtectedRoute>
+              <ClinicDashboard />
             </ProtectedRoute>
           }
         />

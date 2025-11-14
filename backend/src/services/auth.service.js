@@ -82,9 +82,9 @@ export async function registerClinic(clinicData, adminData) {
 }
 
 /**
- * Регистрирует нового пользователя (Patient, Doctor, Partner)
+ * Регистрирует нового пользователя (Patient, Clinic, Partner)
  * @param {object} userData - Данные пользователя
- * @returns {Promise<object>} { user, token }
+ * @returns {Promise<object>} { user, token, clinic? }
  */
 export async function registerUser(userData) {
   console.log('🔵 [AUTH SERVICE] Регистрация пользователя:', { email: userData.email, role: userData.role });
@@ -104,12 +104,76 @@ export async function registerUser(userData) {
 
   // 3. Определяем status в зависимости от роли
   // PATIENT получает instant access (ACTIVE)
-  // DOCTOR и PARTNER требуют одобрения (PENDING)
-  const status = userData.role === 'PATIENT' ? 'ACTIVE' : 'PENDING';
+  // CLINIC получает instant access (ACTIVE) - владелец клиники
+  // PARTNER требует одобрения (PENDING)
+  const status = (userData.role === 'PATIENT' || userData.role === 'CLINIC') ? 'ACTIVE' : 'PENDING';
 
   console.log('🔵 [AUTH SERVICE] Статус пользователя:', status);
 
-  // 4. Подготавливаем данные для создания
+  // 4. Если роль CLINIC - создаем клинику и владельца в транзакции
+  if (userData.role === 'CLINIC') {
+    console.log('🔵 [AUTH SERVICE] Создание клиники:', userData.clinicName);
+
+    // Генерируем slug из названия клиники
+    const baseSlug = createSlug(userData.clinicName);
+    const uniqueSlug = await createUniqueSlug(baseSlug, prisma);
+
+    const result = await prisma.$transaction(async tx => {
+      // Создаем клинику
+      const clinic = await tx.clinic.create({
+        data: {
+          name: userData.clinicName,
+          slug: uniqueSlug,
+          email: userData.clinicEmail,
+          phone: userData.clinicPhone,
+          city: userData.city,
+          address: userData.address || null,
+          about: userData.about || null,
+        },
+      });
+
+      console.log('✅ [AUTH SERVICE] Клиника создана:', clinic.id);
+
+      // Создаем владельца клиники (User с role CLINIC)
+      const user = await tx.user.create({
+        data: {
+          clinicId: clinic.id,
+          email: userData.email,
+          passwordHash,
+          name: userData.name,
+          role: 'CLINIC',
+          status: 'ACTIVE',
+          phone: userData.phone || null,
+          dateOfBirth: userData.dateOfBirth ? new Date(userData.dateOfBirth) : null,
+          gender: userData.gender || null,
+        },
+      });
+
+      console.log('✅ [AUTH SERVICE] Владелец клиники создан:', user.id);
+
+      return { clinic, user };
+    });
+
+    // Генерируем JWT токен
+    const token = generateToken({
+      userId: result.user.id,
+      clinicId: result.clinic.id,
+      role: result.user.role,
+      status: result.user.status,
+    });
+
+    // Возвращаем данные без passwordHash
+    const { passwordHash: _, ...userWithoutPassword } = result.user;
+
+    return {
+      user: userWithoutPassword,
+      clinic: result.clinic,
+      token,
+      expiresIn: 604800, // 7 дней в секундах
+    };
+  }
+
+  // 5. Для других ролей (PATIENT, PARTNER) - обычная регистрация
   const userDataToCreate = {
     email: userData.email,
     passwordHash,
@@ -121,38 +185,22 @@ export async function registerUser(userData) {
     gender: userData.gender || null,
   };
 
-  // 5. Добавляем role-specific поля
-  if (userData.role === 'DOCTOR') {
-    userDataToCreate.specialization = userData.specialization;
-    userDataToCreate.licenseNumber = userData.licenseNumber;
-    userDataToCreate.experience = userData.experience;
-    userDataToCreate.clinicId = userData.clinicId || null;
-  }
-
+  // 6. Добавляем role-specific поля для PARTNER
   if (userData.role === 'PARTNER') {
     userDataToCreate.organizationName = userData.organizationName;
     userDataToCreate.organizationType = userData.organizationType;
     userDataToCreate.inn = userData.inn;
-    userDataToCreate.address = userData.address;
+    userDataToCreate.address = userData.organizationAddress;
   }
 
-  // 6. Создаем пользователя
+  // 7. Создаем пользователя
   const user = await prisma.user.create({
     data: userDataToCreate,
-    include: {
-      clinic: userData.clinicId ? {
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-        },
-      } : false,
-    },
   });
 
   console.log('✅ [AUTH SERVICE] Пользователь создан:', { id: user.id, role: user.role, status: user.status });
 
-  // 7. Генерируем JWT токен
+  // 8. Генерируем JWT токен
   const token = generateToken({
     userId: user.id,
     clinicId: user.clinicId,
@@ -160,7 +208,7 @@ export async function registerUser(userData) {
     status: user.status,
   });
 
-  // 8. Возвращаем данные без passwordHash
+  // 9. Возвращаем данные без passwordHash
   const { passwordHash: _, ...userWithoutPassword } = user;
 
   return {

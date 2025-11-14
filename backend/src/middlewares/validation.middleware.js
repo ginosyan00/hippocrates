@@ -21,6 +21,8 @@ export function validate(schema) {
         message: detail.message,
       }));
 
+      console.log('🔴 [VALIDATION] Validation failed:', JSON.stringify(details, null, 2));
+
       return res.status(400).json({
         success: false,
         error: {

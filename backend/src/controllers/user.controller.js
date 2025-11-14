@@ -166,3 +166,27 @@ export async function rejectUser(req, res, next) {
   }
 }
 
+/**
+ * POST /api/v1/users/doctors
+ * Создать врача в клинике (только для CLINIC role - владелец клиники)
+ */
+export async function createDoctor(req, res, next) {
+  try {
+    const clinicId = req.user.clinicId;
+
+    console.log('🔵 [USER CONTROLLER] Создание врача для клиники:', clinicId);
+
+    if (!clinicId) {
+      throw new Error('Clinic ID is required');
+    }
+
+    const doctor = await userService.createDoctorByClinic(clinicId, req.body);
+
+    console.log('✅ [USER CONTROLLER] Врач успешно создан:', doctor.id);
+    successResponse(res, doctor, 201);
+  } catch (error) {
+    console.log('🔴 [USER CONTROLLER] Ошибка:', error.message);
+    next(error);
+  }
+}
+

@@ -6,7 +6,7 @@ import React from 'react';
  * Следует Design Rules: минималистичный, плоский, современный
  */
 
-export type UserRole = 'PATIENT' | 'DOCTOR' | 'PARTNER';
+export type UserRole = 'PATIENT' | 'CLINIC' | 'PARTNER';
 
 interface RoleSelectorProps {
   selectedRole: UserRole | null;
@@ -30,10 +30,10 @@ const roles: RoleCardData[] = [
     color: 'bg-blue-500',
   },
   {
-    role: 'DOCTOR',
-    title: 'Врач',
-    description: 'Управление пациентами, расписание, консультации',
-    icon: '⚕️',
+    role: 'CLINIC',
+    title: 'Клиника',
+    description: 'Управление клиникой, врачами и пациентами',
+    icon: '🏥',
     color: 'bg-green-500',
   },
   {
@@ -92,15 +92,6 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ selectedRole, onSele
 
             {/* Description */}
             <p className="text-xs text-text-10 text-center leading-relaxed">{roleCard.description}</p>
-
-            {/* Status badge для Doctor и Partner */}
-            {roleCard.role !== 'PATIENT' && (
-              <div className="mt-4 pt-4 border-t border-stroke">
-                <span className="inline-block px-3 py-1 bg-yellow-50 text-yellow-600 text-[10px] font-medium rounded-full">
-                  ⏳ Требует одобрения
-                </span>
-              </div>
-            )}
           </button>
         ))}
       </div>

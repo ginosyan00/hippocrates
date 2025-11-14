@@ -92,6 +92,26 @@ export const userService = {
     console.log('✅ [USER SERVICE] Пользователь отклонен');
     return data.data;
   },
+
+  /**
+   * Создать врача в клинике (только для DOCTOR - владелец клиники)
+   */
+  async createDoctor(doctor: {
+    name: string;
+    email: string;
+    password: string;
+    specialization: string;
+    licenseNumber: string;
+    experience: number;
+    phone?: string;
+    dateOfBirth?: string;
+    gender?: 'male' | 'female' | 'other';
+  }): Promise<User> {
+    console.log('🔵 [USER SERVICE] Создание врача для клиники');
+    const { data } = await api.post<ApiResponse<User>>('/api/v1/users/doctors', doctor);
+    console.log('✅ [USER SERVICE] Врач успешно создан:', data.data.id);
+    return data.data;
+  },
 };
 
 
